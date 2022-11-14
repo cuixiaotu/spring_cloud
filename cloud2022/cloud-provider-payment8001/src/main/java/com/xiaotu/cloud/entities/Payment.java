@@ -1,14 +1,16 @@
-package com.xiaotu.entities;
+package com.xiaotu.cloud.entities;
 
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Payment {
+public class Payment implements Serializable {
 
     private long id;
     private String serial;

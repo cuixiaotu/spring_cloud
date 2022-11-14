@@ -1,6 +1,6 @@
-package com.xiaotu.service;
+package com.xiaotu.cloud.service;
 
-import com.xiaotu.entities.Payment;
+import com.xiaotu.cloud.entities.Payment;
 import org.apache.ibatis.annotations.Param;
 
 public interface PaymentService {

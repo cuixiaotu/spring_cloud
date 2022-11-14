@@ -1,24 +1,28 @@
-package com.xiaotu.controller;
+package com.xiaotu.cloud.controller;
 
 
-import com.xiaotu.entities.CommonResult;
-import com.xiaotu.entities.Payment;
-import com.xiaotu.service.PaymentService;
+import com.xiaotu.cloud.entities.CommonResult;
+import com.xiaotu.cloud.entities.Payment;
+import com.xiaotu.cloud.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import sun.util.resources.cldr.es.CalendarData_es_PY;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+//import javax.annotation.Resource;
 
-@RestController
 @Slf4j
+@RestController
 public class PaymentController {
 
-    @Resource
+    @Autowired
     private PaymentService paymentService;
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "hello world";
+    }
 
     @PostMapping("/payment/create")
     public CommonResult create(@RequestBody Payment payment){
@@ -33,7 +37,9 @@ public class PaymentController {
         }
     }
 
-    public CommonResult getPaymentById(@Param("id") Long id){
+    @GetMapping("/payment/get/{id}")
+    public CommonResult getPaymentById(@PathVariable("id") Long id){
+        System.out.println("id  :"+id);
         Payment payment = paymentService.getPaymentById(id);
         log.info("Payment" + payment);
 
