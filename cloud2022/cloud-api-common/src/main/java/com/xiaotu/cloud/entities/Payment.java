@@ -1,4 +1,4 @@
-package com.cloud.entities;
+package com.xiaotu.cloud.entities;
 
 
 import lombok.AllArgsConstructor;

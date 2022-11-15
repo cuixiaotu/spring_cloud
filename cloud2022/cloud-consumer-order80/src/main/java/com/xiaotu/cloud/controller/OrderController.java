@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
-
 @RestController
 @Slf4j
 public class OrderController {
@@ -30,7 +28,7 @@ public class OrderController {
     @GetMapping("/consumer/payment/get/{id}")
     public CommonResult<Payment> getPayment(@PathVariable("id") Long id){
         log.info("查询id="+id);
-        return restTemplate.getForObject(PAYMENT_URL+"/payment/id/" +id,CommonResult.class);
+        return restTemplate.getForObject(PAYMENT_URL+"/payment/get/" +id,CommonResult.class);
     }
 
 }
