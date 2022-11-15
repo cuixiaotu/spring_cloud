@@ -12,6 +12,7 @@
     <module>cloud-provider-payment8001</module>
     <module>cloud-consumer-order80</module>
     <module>cloud-api-common</module>
+    <module>cloud-eureka-server7001</module>
   </modules>
 
   <properties>
@@ -35,7 +36,7 @@
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>2.3.7.RELEASE</version>
+        <version>2.1.9.RELEASE</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
