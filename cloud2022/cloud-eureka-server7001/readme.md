@@ -100,3 +100,65 @@ Boot版本恢复成2.1.x后  clean后 成功运行
 
 
 
+1. 引入依赖
+
+   ```xml
+   <dependency>
+       <groupId>org.springframework.cloud</groupId>
+       <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+       <version>2.1.3.RELEASE</version>
+   </dependency>
+   ```
+
+2. yml添加配置
+
+   ```yml
+   eureka:
+     client:
+       register-with-eureka: true
+       fetch-registry: true
+       service-url:
+         defaultZone: http://localhost:7001/eureka
+   ```
+
+3. 主配置类上增加 `@EnableEurekaClient`注解，表示这个项目是eureka的客户端
+
+4. 启动项目，然后刷新页面，成功注册成注册中心
+
+
+
+![image-20221115195808524](images/readme/image-20221115195808524.png)
+
+
+
+ 将EurekaClient端80注册进EurekaServer成为服务消费者consumer
+
+1. 引入依赖
+
+   ```xml
+   <dependency>
+       <groupId>org.springframework.cloud</groupId>
+       <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+       <version>2.1.3.RELEASE</version>
+   </dependency>
+   ```
+
+2. yml添加
+
+   ```yml
+   spring:
+     application:
+     	name: cloud-order-service
+   eureka:
+     client:
+       register-with-eureka: true
+       fetch-registry: true
+       service-url:
+         defaultZone: http://localhost:7001/eureka
+   ```
+
+   
+
+
+
+![image-20221115204619598](images/readme/image-20221115204619598.png)
