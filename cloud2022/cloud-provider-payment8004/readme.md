@@ -100,8 +100,8 @@ docker stop 容器ID
 
 7.启动8004容器，输入`http://localhost:8004/payment/zk`
 
-![image-20221116145237867](images/readme/image-20221116145237867.png)
-
-8.启动zookeeper容器 （成功进入注册中心）
+![image-20221116173534944](images/readme/image-20221116173534944.png)8.启动zookeeper容器 （成功进入注册中心)
 
 ![image-20221116173009928](images/readme/image-20221116173009928.png)
+
+![image-20221116173446002](images/readme/image-20221116173446002.png)
