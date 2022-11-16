@@ -23,3 +23,8 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:7001/eureka
+  instance:
+    instance-id: payment8001
+    prefer-ip-address: true
+#    lease-renewal-interval-in-seconds: 1 #续租时间 默认30秒 单位秒
+#    lease-expiration-duration-in-seconds: 2 #收到最后一次心跳后等待时间上限 默认90秒 单位秒 超时剔除服务

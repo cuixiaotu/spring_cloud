@@ -1,5 +1,61 @@
 # eureka
 
+
+
+Eureka 是 Netflix 开源的一个 RESTful (代表性状态传输) 服务，主要用于服务注册与发现。Eureka 由两个组件组成：Eureka 服务器和 Eureka 客户端。Eureka 服务器用作服务注册服务器；Eureka 客户端是一个 Java 客户端，用来简化与服务器的交互、作为轮询负载均衡器，并提供服务的故障切换支持。其主要特点如下：
+
+- 开源
+- 可靠
+- 功能齐全
+- 基于 Java
+- Spring Cloud 集成
+
+
+
+## eureka 的几个重要概念
+
+### Rureka 的几个重要概念egister (服务注册)
+
+当 Eureka 客户端向 Eureka Server 注册时，它提供自身的元数据，如 IP、port、运行状况、URL 和主页等。
+
+
+
+### Renew (服务续约)
+
+Eureka Client 每隔 30 秒发送一次心跳来完成续约。 Eureka Client 通过续约来告知 Eureka Server 自己仍然存在，没有任何问题。正常情况下，如果 Eureka Server 在 90 秒内没有收到 Eureka Client 的续约，那么它会将实例从其注册表中删除。 此间隔时间建议用户不要更改。
+
+
+
+### Get Registry (获取注册表信息)
+
+Eureka Client 从 Eureka Server 获取注册表信息，并将其缓存到本地。Eureka Client 和 Eureka Server 间支持 JSON/XML 格式进行通讯。默认压缩 JSON 格式。
+
+
+
+### Cancel (服务下线)
+
+Eureka Client 在程序关闭时向 Eureka 服务器发送取消请求。发送请求后，该客户端实例信息将从服务器的实例注册表中删除。
+
+
+
+## Eureka 高可用架构
+
+![img](images/readme/812a6a49f0e03312dc4e4dc0be4dc69b.png)
+
+
+
+架构中主要 3 种角色：
+
+- **Eureka Server：** 通过 Register、Get、Renew 等接口提供服务注册和发现功能
+- **Application Service：** 服务提供方，把自身服务实例注册到 Eureka Server
+- **Application Client：** 服务调用方，通过 Eureka Server 获取服务实例，并调用 Application Service
+
+
+
+
+
+
+
 1. 建module
 
 cloud-eureka-server7001
@@ -251,4 +307,151 @@ eureka:
 
 
 ![image-20221115214008487](images/readme/image-20221115214008487.png)
+
+
+
+
+
+## actuator 微服务信息完善
+
+修改三个微服务的yml文件：
+
+```yml
+###8001
+eureka:
+  instance:
+    instance-id: payment8001
+    prefer-ip-address: true
+
+###8002
+eureka:
+  instance:
+    instance-id: payment8002
+    prefer-ip-address: true
+
+###80
+eureka:
+  instance:
+    instance-id: consumer80
+    prefer-ip-address: true
+```
+
+
+
+
+
+原：
+
+![image-20221116095853486](images/readme/image-20221116095853486.png)
+
+现：
+
+![image-20221116102518631](images/readme/image-20221116102518631.png)
+
+
+
+## 服务发现Discovery
+
+对于注册进eureka里面的微服务，可以通过服务发现来获得该服务的信息。
+
+ 修改提供者集群的controller  服务提供者 既payment
+
+1. 在主配置类上加上`@EnableDiscoveryClient`注解，启用发现客户端。
+2. 在两个提供者的PaymentController中加入：
+
+```java
+    //Springframework的DiscoveryClient
+    @Resource
+    private DiscoveryClient discoveryClient;
+
+    @GetMapping("/payment/discovery")
+    public Object discovery(){
+        //获取服务列表信息
+        List<String> services = discoveryClient.getServices();
+        for (String element:services){
+            log.info("********element:"+element);
+        }
+
+        //获取CLOUD-PAYMENT-SERVICE服务的具体实例
+        List<ServiceInstance> instances = discoveryClient.getInstances("CLOUD-PAYMENT-SERVICE");
+        for (ServiceInstance instance : instances
+        ) {
+            log.info(instance.getInstanceId()+"\t"+instance.getHost()+"\t"+instance.getPort()+"\t"+instance.getClass());
+        }
+
+        return discoveryClient;
+    }
+
+```
+
+
+
+测试
+
+重启8001和8002，输入http://localhost:8001/payment/discovery
+
+![image-20221116103413231](images/readme/image-20221116103413231.png)
+
+
+
+![image-20221116103906481](images/readme/image-20221116103906481.png)
+
+
+
+## Eureka自我保护
+
+保护模式主要用于一组客户端和Eureka Server之间存在网络分区场景下的保护，一旦进入保护模式。Eureka Server将会尝试保护其服务注册表中的信息，不再删除服务注册表中的数据，也就是不会注销任何微服务。
+
+如何在Eureka Server的首要看到下面这个提示 说明Eureka进入了保护模式。
+
+EMERGENCY! EUREKA MAY BE INCORRECTLY CLAIMING INSTANCES ARE UP WHEN THEY'RE NOT. RENEWALS ARE LESSER THAN THRESHOLD AND HENCE THE INSTANCES ARE NOT BEING EXPIRED JUST TO BE SAFE.
+
+![image-20221116105506031](images/readme/image-20221116105506031.png)
+
+
+
+导致原因：
+
+- 某个时刻某个微服务不可用用了，Eureka不会立即清除，依旧会对该微服务的信息进行保存
+- CAP的AP分支
+
+为什么会产生Eureka自我保护机制
+
+为了防止EurekaClient可以正常运行，但是与EurekaServer网络不通情况下，EurekaServer不会立即将EurekaClient服务剔除
+
+什么是自我保护模式
+
+默认情况下，如果EurekaServer在一定时间内没有接收到某个微服务实例的心跳，EurekaServer会注销该实例（默认90秒）。但是当网络分区故障发生（延时，卡顿，拥挤）时，微服务和EurekaServer之间没办法正常通信，以上行为会变得非常危险，因为服务本身是健康的，此时不应该注销这个微服务。Eureka通过“自我保护机制”来解决这个问题。 当EurekaServer节点在短时间内丢失过多的服务端（可能发生了网络分区故障），那么这个节点会进入自我保护模式。
+
+![image-20221116111307959](images/readme/image-20221116111307959.png)
+
+自我保护机制： 默认情况下EurekaClient 定时向 EurekaServer发送心跳包，如果Eureka在server端在一定时间内（默认90秒）没有收到EurekaClient发送心跳包，便会直接从注册列表中剔除该服务，但是在短时间内（90秒中）丢失了大量的服务实例心跳，这个时候Eureka会开启自我保护机制，即不会剔除服务。（该现象可能出现在如果网络不通，但是EurekaClient出现宕机，此时如果换做别的注册中心如果一定时间内没有收到心跳，可能剔除该服务，这样就会出现严重失误，因为客户端还能发送心跳，只是网络延迟问题，自我保护机制为了解决此问题）
+
+
+
+#### 禁止自我保护
+
+先把cloud-eureka-server7001和cloud-provider-payment8001都切回单机版测试禁止自我保护。
+
+cloud-eureka-server7001的yml文件：
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -10,3 +10,6 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:7001/eureka
+  instance:
+    instance-id: consumer80
+    prefer-ip-address: true
