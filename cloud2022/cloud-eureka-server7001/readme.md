@@ -435,7 +435,18 @@ EMERGENCY! EUREKA MAY BE INCORRECTLY CLAIMING INSTANCES ARE UP WHEN THEY'RE NOT.
 
 cloud-eureka-server7001的yml文件：
 
+```yml
+#  server:
+#    enable-self-preservation: true #关闭自我保护
+#    eviction-interval-timer-in-ms: 2000 #心跳间隔
+```
 
+cloud-provider-payment8001的yml文件：
+
+```yml
+#    lease-renewal-interval-in-seconds: 1 #续租时间 默认30秒 单位秒
+#    lease-expiration-duration-in-seconds: 2 #收到最后一次心跳后等待时间上限 默认90秒 单位秒 超时剔除服务
+```
 
 
 

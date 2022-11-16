@@ -83,7 +83,7 @@
 删除src目录,并添加下方
 
 ```xml
- <groupId>org.xiaotu.cloud</groupId>
+ <groupId>com.xiaotu.cloud</groupId>
   <artifactId>cloud2022</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -230,7 +230,7 @@ maven中dependencyManagement标签：
 调整父工程的pom，idea可能自动帮处理了
 
 ```xml
-  <groupId>org.xiaotu.cloud</groupId>
+  <groupId>com.xiaotu.cloud</groupId>
   <artifactId>cloud2022</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
