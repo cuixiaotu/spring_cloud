@@ -37,6 +37,11 @@ public class PaymentController {
         return "hello world";
     }
 
+    @GetMapping("/payment/lb")
+    private String getPaymentLB(){
+        return serverPort;
+    }
+
     @GetMapping("/payment/discovery")
     public Object discovery(){
         //获取服务列表信息
