@@ -23,7 +23,183 @@ Feign和OpenFeign的区别
 
 
 
-![img](https://img-blog.csdnimg.cn/20200607203046585.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM2OTAzMjYx,size_16,color_FFFFFF,t_70)
+1. 新建模块cloud-consumer-feign-order80
+
+2. pom
+
+   ```xml
+    <dependencies>
+           <dependency>
+               <groupId>org.springframework.cloud</groupId>
+               <artifactId>spring-cloud-starter-openfeign</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.cloud</groupId>
+               <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+           </dependency>
+   
+           <dependency>
+               <groupId>com.xiaotu.cloud</groupId>
+               <artifactId>cloud-api-common</artifactId>
+               <version>${project.version}</version>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-web</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-actuator</artifactId>
+           </dependency>
+   
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-test</artifactId>
+           </dependency>
+   
+       </dependencies>
+   ```
+
+3. yml
+
+   ```yml
+   server:
+     port: 80
+   
+   eureka:
+     client:
+       register-with-eureka: true
+       service-url:
+         defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka,http://eureka7003.com:7003/eureka
+   ```
+
+4. 新建service.PaymentFeignService接口类
+
+   ```java
+   //Feign封装了Ribbon和RestTemplate 实现负载均衡和发送请求
+   @Component
+   @FeignClient(value = "CLOUD-PAYMENT-SERVICE")
+   public interface PaymentFeignService {
+   
+       @GetMapping("/payment/get/{id}")
+       public CommonResult getPaymentById(@PathVariable("id") Long id);
+   }
+   ```
+
+5. 主启动类
+
+   ```java
+   @EnableFeignClients //激活Feign
+   @SpringBootApplication
+   public class OrderFeignMain80 {
+   
+       public static void main(String[] args) {
+           SpringApplication.run(OrderFeignMain80.class,args);
+       }
+   }
+   ```
+
+6. controller.OrderFeignController
+
+   ```java
+   @Slf4j
+   @RestController
+   public class OrderFeignController {
+   
+       @Resource
+       private PaymentFeignService paymentFeignService;
+   
+       @GetMapping("/consumer/payment/get/{id}")
+       public CommonResult<Payment> getPaymentById(@PathVariable("id") Long id){
+           return paymentFeignService.getPaymentById(id);
+       }
+   
+   }
+   ```
+
+7. 访问http://localhost/consumer/payment/get/1
+
+![image-20221121101632067](images/openfeing/image-20221121101632067.png)
+
+总结：
+
+消费者
+
+![image-20221121101722822](images/openfeing/image-20221121101722822.png)
+
+提供者
+
+![image-20221121102347534](images/openfeing/image-20221121102347534.png)
 
 
 
+OpenFeign超时控制
+
+提供者在处理服务时哟改好了三秒，提供者认为3秒正常，而消费者只愿意等一秒。1秒后，提供者会没返回数据，消费者认为超时。双方约定超时时间。
+
+模拟超时
+
+
+
+1. 在8001的PaymentController里添加：
+
+   ```java
+   @GetMapping("/payment/feign/timeout")
+   public String paymentFeignTimeout() {
+       try {
+           TimeUnit.SECONDS.sleep(3);
+       }catch (InterruptedException e) {
+           e.printStackTrace();
+       }
+       return serverPort;
+   }
+   ```
+   
+2. 在80的PaymentFeignService
+
+   ```java
+   @GettingMapping("/payment/feign/timeout")
+   public String paymentFeignTimeout();
+   ```
+
+3. 在80的OrderFeignController
+
+   ```java
+   @GettingMapping("/consumer/payment/feign/timeout")
+   ```
+
+4. 启动相关项目 访问http://localhost/consumer/payment/feign/timeout![image-20221121104550807](images/openfeing/image-20221121104550807.png)
+
+5. 在80yml中添加配置
+
+   ```yml
+   ribbon:
+     ReadTimeout: 5000
+     connectTimeout: 5000
+   ```
+
+6. 重新访问`http://localhost/consumer/payment/feign/timeout`，3秒后显示。
+
+![image-20221121134140967](images/openfeing/image-20221121134140967.png)
+
+
+
+## OpenFeign日志打印功能
+
+### 步骤
+
+1. 配置日志bean
+   在80的springcloud包下新建config.FeignConfig
+
+2. 在80的yml文件中添加：
+
+   ```yml
+   #开启日志的feign客户端
+   logging:
+     level:
+       com.xiaotu.cloud.service.PaymentFeignService: debug
+   ```
+
+3. 启动
+
+   ![image-20221121134740617](images/openfeing/image-20221121134740617.png)

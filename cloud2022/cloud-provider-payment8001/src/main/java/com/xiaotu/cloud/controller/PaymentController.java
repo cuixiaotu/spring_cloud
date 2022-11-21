@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 //import javax.annotation.Resource;
 
@@ -31,6 +31,16 @@ public class PaymentController {
     //Springframework的DiscoveryClient
     @Resource
     private DiscoveryClient discoveryClient;
+
+    @GetMapping("/payment/feign/timeout")
+    public String paymentFeignTimeout() {
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        }catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return serverPort;
+    }
 
     @GetMapping("/hello")
     public String hello() {
