@@ -184,9 +184,7 @@ https://jmeter.apache.org/download_jmeter.cgi
 
 ![image-20221121154113251](images/readme/image-20221121154113251.png)
 
-可以发现线程打满，访问速度明显变慢
-
-
+可以发现线程打满，自己再去访问，速度明显变慢
 
 
 
@@ -351,7 +349,7 @@ https://jmeter.apache.org/download_jmeter.cgi
 
 对方服务（8001）down机了，调用方（80）不能一直卡死等待，必须要有服务降级
 
-对方服务（8001）PK，调用方（80）自身故障或自我要求（等待时间小于服务提供者），自己处理降级
+对方服务（8001）OK，调用方（80）自身故障或自我要求（等待时间小于服务提供者），自己处理降级
 
 
 
@@ -464,7 +462,7 @@ https://jmeter.apache.org/download_jmeter.cgi
 
 2. 并在OrderHystrixController类上加上`@DefaultProperties(defaultFallback = "payment_Global_FallbackMethod")`，设置全局fallback方法。
 
-3. 把paymentInfo_TimeOut方法的@HystrixCommand
+3. 把paymentInfo_TimeOut方法上添加@HystrixCommand
 
 4. 进行测试，`http://localhost/consumer/payment/hystrix/timeout2/1`
 
@@ -476,7 +474,7 @@ https://jmeter.apache.org/download_jmeter.cgi
 
 1. 在80的service包下新建PaymentFallbackService类，实现PaymentHystrixService接口
 
-2. yml中
+2. yml无需处理，已有配置类
 
 3. 然后给PaymentHystrixService接口的@FeignClient注解加上`fallback = PaymentFallbackService.class`属性，用于出错进行fallback处理
 
