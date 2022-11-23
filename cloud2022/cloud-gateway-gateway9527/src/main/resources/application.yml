@@ -15,6 +15,10 @@ spring:
           uri: lb://cloud-payment-service
           predicates:
             - Path=/payment/get/** #断言 路径相匹配的进行路由
+            #- After=2022-11-23T11:38:31.766+08:00[Asia/Singapore] #增加一小时
+            - Cookie=username,theodore
+            - Header=X-Request-Id, \d+
+            - Host={sub}.xiaotu.com
         - id: payment_route2 #路由的id,没有规定单要求唯一，建议配合服务名
           # 匹配后提供服务的路由地址
           # uri: http://localhost:8001

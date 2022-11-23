@@ -2,6 +2,8 @@
 
 https://cloud.spring.io/spring-cloud-static/spring-cloud-gateway/2.2.1.RELEASE/reference/html/
 
+![Spring Cloud Gateway 图](images/readme/spring_cloud_gateway_diagram.png)
+
 
 
 1. 新建模块cloud-gateway-gateway9527
@@ -101,7 +103,7 @@ https://cloud.spring.io/spring-cloud-static/spring-cloud-gateway/2.2.1.RELEASE/r
 
 
 
-### Gateway网关路由的两种配置方式
+## Gateway网关路由的两种配置方式
 
 1. 在配置文件中配置
    在配置文件yml中配置
@@ -137,7 +139,7 @@ https://cloud.spring.io/spring-cloud-static/spring-cloud-gateway/2.2.1.RELEASE/r
 
    
 
-   ## 通过微服务名实现动态路由
+   ### 通过微服务名实现动态路由
 
    ![image-20221122171738913](images/readme/image-20221122171738913.png)
 
@@ -189,4 +191,156 @@ https://cloud.spring.io/spring-cloud-static/spring-cloud-gateway/2.2.1.RELEASE/r
 
 
 
-Spring Cloud Gateway将路由匹配作为
+### After/Before/Between
+
+新建测试类T2
+
+```java
+import java.time.ZonedDateTime;
+public class T2 {
+
+    public static void main(String[] args) {
+        //获取当前时间串
+        ZonedDateTime now = ZonedDateTime.now();
+        System.out.println(now);
+        //2022-11-23T10:38:31.766+08:00[Asia/Singapore]
+    }
+}
+```
+
+配置yml,增加1小时
+
+```yml
+          predicates:
+            - Path=/payment/get/** #断言 路径相匹配的进行路由
+            - After=2022-11-23T11:38:31.766+08:00[Asia/Singapore] #增加一小时
+```
+
+测试： 配置after谓语的路由暂时没办法访问( 需等一小时后)，其他路由正常。
+
+### Cookies
+
+配置yml( cookie 名称和正则表达式 )
+
+```yml
+- Cookie=username,theodore
+```
+
+postman右上角添加cookies
+
+![image-20221123105512307](images/readme/image-20221123105512307.png)
+
+或者直接curl吧
+
+### Header
+
+配置yml( header 名称和正则表达式 )
+
+```yaml
+- Header=X-Request-Id, \d+
+```
+
+![image-20221123105837326](images/readme/image-20221123105837326.png)
+
+### Host
+
+主机名模式列表。该模式是 Ant 风格的模式，带有`.`分隔符
+
+```yml
+# 1.Ant xxx.xiaotu.com
+- Host=**.xiaotu.com,**.anotherhost.org
+# 2.URI模板变量，ServerWebExchange.getAttributes()具有定义在中的键中
+- Host={sub}.xiaotu.com
+```
+
+![image-20221123110542584](images/readme/image-20221123110542584.png)
+
+
+
+### Method
+
+请求方法
+
+```yml
+- Method=POST
+```
+
+
+
+### Path
+
+请求路径
+
+```yml
+- Path=/red/{segment},/blue/{segment}
+```
+
+
+
+```java
+Map<String, String> uriVariables = ServerWebExchangeUtils.getPathPredicateVariables(exchange);
+
+String segment = uriVariables.get("segment");
+```
+
+### Query
+
+请求参数
+
+一个必需`param`的和一个可选的`regexp`
+
+```yml
+- Query=name,\d+
+```
+
+
+
+
+
+## Filter的使用
+
+https://cloud.spring.io/spring-cloud-static/spring-cloud-gateway/2.2.1.RELEASE/reference/html/#the-addrequestheader-gatewayfilter-factory
+
+路由过滤器允许以某种方式修改传入的 HTTP 请求或传出的 HTTP 响应
+
+GatewayFilter（31种）
+Global Filter（10种)
+
+新增过滤器 filter.MyLogGateWayFilter
+
+```java
+@Component
+@Slf4j
+public class MyLogGateWayFilter implements GlobalFilter, Ordered {
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        log.info("*************come in MyLogGateWayFilter: "+ new Date());
+        //获取request中的uname参数
+        String uname = exchange.getRequest().getQueryParams().getFirst("uname");
+        if (uname == null) {
+            log.info("*************用户名为null，非法用户");
+            exchange.getResponse().setStatusCode(HttpStatus.NOT_ACCEPTABLE);
+            return exchange.getResponse().setComplete();
+        }
+        //放行
+        return chain.filter(exchange);
+    }
+
+    @Override
+    public int getOrder() {
+        //返回优先级
+        return 0;
+    }
+}
+```
+
+
+
+http://localhost:9527/payment/lb?asd=111
+
+![image-20221123112539493](images/readme/image-20221123112539493.png)
+
+http://localhost:9527/payment/lb?uname=111
+
+![image-20221123112608217](images/readme/image-20221123112608217.png)
