@@ -7,15 +7,14 @@ spring:
     config:
       server:
         git:
-         # uri: https://gitee.com/cuixiaotu/cloud-config.git
-          uri: https://github.com/cuixiaotu/cloud-config.git
+          uri: https://gitee.com/cuixiaotu/cloud-config.git
           search-paths: #搜索目录
             - cloud-config
-          username: 616364596@qq.com
-          password: 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
       label: main #读取分组
 eureka:
   client:
+    healthcheck:
+      enabled: true
     service-url:
       defaultZone: http://localhost:7001/eureka
 debug: true
