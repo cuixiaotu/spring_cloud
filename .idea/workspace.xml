@@ -2,18 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4ee3aa1f-c3c7-4a4f-8bd0-ebdea9e5156a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/cloud2022/cloud-consumer-feign-order80/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cloud2022/cloud-consumer-feign-order80/src/main/java/com/xiaotu/cloud/OrderFeignMain80.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cloud2022/cloud-consumer-feign-order80/src/main/java/com/xiaotu/cloud/controller/OrderFeignController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cloud2022/cloud-consumer-feign-order80/src/main/java/com/xiaotu/cloud/service/PaymentFeignService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cloud2022/cloud-consumer-feign-order80/src/main/resources/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cloud2022/cloud-consumer-order80/openfeing.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-consumer-consul-order80/target/classes/com/xiaotu/cloud/controller/OrderConsulController.class" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-consumer-consul-order80/target/classes/com/xiaotu/cloud/controller/OrderConsulController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-provider-payment8001/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-provider-payment8001/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-provider-payment8001/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-provider-payment8001/target/classes/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-provider-payment8002/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-provider-payment8002/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-provider-payment8002/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-provider-payment8002/target/classes/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud2022/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-config-center-3344/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-config-center-3344/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-config-center-3344/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-config-center-3344/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-config-center-3344/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-config-center-3344/target/classes/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-config-client-3355/src/main/resources/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-config-client-3355/src/main/resources/bootstrap.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-config-client-3355/target/classes/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-config-client-3355/target/classes/bootstrap.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-config-client-3355/target/classes/com/xiaotu/cloud/controller/ConfigClientController.class" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-config-client-3355/target/classes/com/xiaotu/cloud/controller/ConfigClientController.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +47,7 @@
     <property name="RequestMappingsPanelWidth0" value="75" />
     <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="jdk.selected.JAVA_MODULE" value="1.8" />
@@ -75,7 +70,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Application.OrderFeignMain80">
+  <component name="RunManager" selected="Spring Boot.ConfigClientMain3355">
     <configuration name="OrderFeignMain80" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.xiaotu.cloud.OrderFeignMain80" />
       <module name="cloud-consumer-feign-order80" />
@@ -89,9 +84,30 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ConfigCenterMain3344" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloud-config-center-3344" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.ConfigCenterMain3344" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConfigClientMain3355" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloud-config-client-3355" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.ConfigClientMain3355" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ConsulOrderMain80" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="cloud-consumer-consul-order80" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.ConsulOrderMain80" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaMain7001" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloud-eureka-server7001" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.EurekaMain7001" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -122,6 +138,34 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="GatewayMain9527" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloud-gateway-gateway9527" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.GatewayMain9527" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HystrixDashboard9001" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloud-consumer-hystrix-dashboard9001" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.HystrixDashboard9001" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrderFeignMain80" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloud-consumer-feign-order80" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.OrderFeignMain80" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrderHystrixMain80" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloud-consumer-feign-hystrix-order80" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.OrderHystrixMain80" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="OrderMain80" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="cloud-consumer-order80" />
       <extension name="coverage">
@@ -138,6 +182,13 @@
     <configuration name="OrderMainZK80" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="cloud-consumerzk-order80" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.OrderMainZK80" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PaymentHystrixMain8001" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloud-provider-hystrix-payment8001" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.PaymentHystrixMain8001" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -199,7 +250,10 @@
       <updated>1668132310736</updated>
       <workItem from="1668132312313" duration="2569000" />
       <workItem from="1668950784673" duration="293000" />
-      <workItem from="1668951081441" duration="3130000" />
+      <workItem from="1668951081441" duration="6546000" />
+      <workItem from="1669362707882" duration="1297000" />
+      <workItem from="1669364138771" duration="156000" />
+      <workItem from="1669364313025" duration="9719000" />
     </task>
     <servers />
   </component>
@@ -219,38 +273,42 @@
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
     <state x="360" y="231" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.25.1792.1095@0.25.1792.1095" timestamp="1668950816085" />
-    <state width="813" height="465" key="GridCell.Tab.0.bottom" timestamp="1668953683478">
+    <state x="100" y="125" width="1592" height="895" key="DiffContextDialog" timestamp="1669377199404">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="813" height="465" key="GridCell.Tab.0.bottom/0.25.1792.1095@0.25.1792.1095" timestamp="1668953683478" />
-    <state width="813" height="465" key="GridCell.Tab.0.center" timestamp="1668953683478">
+    <state x="100" y="125" width="1592" height="895" key="DiffContextDialog/0.25.1792.1095@0.25.1792.1095" timestamp="1669377199404" />
+    <state width="1331" height="492" key="GridCell.Tab.0.bottom" timestamp="1669390044398">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="813" height="465" key="GridCell.Tab.0.center/0.25.1792.1095@0.25.1792.1095" timestamp="1668953683478" />
-    <state width="813" height="465" key="GridCell.Tab.0.left" timestamp="1668953683477">
+    <state width="1331" height="492" key="GridCell.Tab.0.bottom/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044398" />
+    <state width="1331" height="492" key="GridCell.Tab.0.center" timestamp="1669390044397">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="813" height="465" key="GridCell.Tab.0.left/0.25.1792.1095@0.25.1792.1095" timestamp="1668953683477" />
-    <state width="813" height="465" key="GridCell.Tab.0.right" timestamp="1668953683478">
+    <state width="1331" height="492" key="GridCell.Tab.0.center/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044397" />
+    <state width="1331" height="492" key="GridCell.Tab.0.left" timestamp="1669390044396">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="813" height="465" key="GridCell.Tab.0.right/0.25.1792.1095@0.25.1792.1095" timestamp="1668953683478" />
-    <state width="813" height="465" key="GridCell.Tab.1.bottom" timestamp="1668953683480">
+    <state width="1331" height="492" key="GridCell.Tab.0.left/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044396" />
+    <state width="1331" height="492" key="GridCell.Tab.0.right" timestamp="1669390044397">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="813" height="465" key="GridCell.Tab.1.bottom/0.25.1792.1095@0.25.1792.1095" timestamp="1668953683480" />
-    <state width="813" height="465" key="GridCell.Tab.1.center" timestamp="1668953683479">
+    <state width="1331" height="492" key="GridCell.Tab.0.right/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044397" />
+    <state width="1331" height="492" key="GridCell.Tab.1.bottom" timestamp="1669390044403">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="813" height="465" key="GridCell.Tab.1.center/0.25.1792.1095@0.25.1792.1095" timestamp="1668953683479" />
-    <state width="813" height="465" key="GridCell.Tab.1.left" timestamp="1668953683479">
+    <state width="1331" height="492" key="GridCell.Tab.1.bottom/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044403" />
+    <state width="1331" height="492" key="GridCell.Tab.1.center" timestamp="1669390044400">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="813" height="465" key="GridCell.Tab.1.left/0.25.1792.1095@0.25.1792.1095" timestamp="1668953683479" />
-    <state width="813" height="465" key="GridCell.Tab.1.right" timestamp="1668953683480">
+    <state width="1331" height="492" key="GridCell.Tab.1.center/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044400" />
+    <state width="1331" height="492" key="GridCell.Tab.1.left" timestamp="1669390044399">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="813" height="465" key="GridCell.Tab.1.right/0.25.1792.1095@0.25.1792.1095" timestamp="1668953683480" />
+    <state width="1331" height="492" key="GridCell.Tab.1.left/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044399" />
+    <state width="1331" height="492" key="GridCell.Tab.1.right" timestamp="1669390044402">
+      <screen x="0" y="25" width="1792" height="1095" />
+    </state>
+    <state width="1331" height="492" key="GridCell.Tab.1.right/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044402" />
     <state x="545" y="294" width="846" height="593" key="NewModule_or_Project.wizard" timestamp="1668951417371">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
@@ -260,10 +318,22 @@
     </state>
     <state x="440" y="153" key="SettingsEditor/0.0.1920.1160/1920.0.1080.1920@0.0.1920.1160" timestamp="1668147404920" />
     <state x="411" y="169" key="SettingsEditor/0.25.1792.1095@0.25.1792.1095" timestamp="1668951426091" />
+    <state x="557" y="274" key="VCS.ChangeListViewerDialog" timestamp="1669377175689">
+      <screen x="0" y="25" width="1792" height="1095" />
+    </state>
+    <state x="557" y="274" key="VCS.ChangeListViewerDialog/0.25.1792.1095@0.25.1792.1095" timestamp="1669377175689" />
     <state x="0" y="284" key="new project wizard" timestamp="1668953668497">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
     <state x="1920" y="627" key="new project wizard/0.0.1920.1160/1920.0.1080.1920@1920.0.1080.1920" timestamp="1668155640949" />
     <state x="0" y="284" key="new project wizard/0.25.1792.1095@0.25.1792.1095" timestamp="1668953668497" />
+    <state x="561" y="265" key="run.anything.popup" timestamp="1669378833462">
+      <screen x="0" y="25" width="1792" height="1095" />
+    </state>
+    <state x="561" y="265" key="run.anything.popup/0.25.1792.1095@0.25.1792.1095" timestamp="1669378833462" />
+    <state x="561" y="269" width="670" height="676" key="search.everywhere.popup" timestamp="1668955521100">
+      <screen x="0" y="25" width="1792" height="1095" />
+    </state>
+    <state x="561" y="269" width="670" height="676" key="search.everywhere.popup/0.25.1792.1095@0.25.1792.1095" timestamp="1668955521100" />
   </component>
 </project>

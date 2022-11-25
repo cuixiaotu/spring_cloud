@@ -2,10 +2,18 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-api-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud2022/cloud-config-center-3344/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud2022/cloud-config-center-3344/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud2022/cloud-config-client-3355/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud2022/cloud-config-client-3355/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-consumer-consul-order80/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-consumer-consul-order80/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud2022/cloud-consumer-feign-hystrix-order80/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud2022/cloud-consumer-feign-hystrix-order80/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-consumer-feign-order80/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-consumer-feign-order80/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud2022/cloud-consumer-hystrix-dashboard9001/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud2022/cloud-consumer-hystrix-dashboard9001/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-consumer-order80/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-consumer-order80/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-consumerzk-order80/src/main/java" charset="UTF-8" />
@@ -16,8 +24,12 @@
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-eureka-server7002/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-eureka-server7003/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-eureka-server7003/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud2022/cloud-gateway-gateway9527/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud2022/cloud-gateway-gateway9527/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-provider-consul-payment8006/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-provider-consul-payment8006/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud2022/cloud-provider-hystrix-payment8001/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cloud2022/cloud-provider-hystrix-payment8001/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-provider-payment8001/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-provider-payment8001/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud2022/cloud-provider-payment8002/src/main/java" charset="UTF-8" />

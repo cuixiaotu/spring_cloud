@@ -69,16 +69,19 @@ github创建配置项目：https://github.com/cuixiaotu/cloud-config
        name: cloud-config-center
      cloud:
        config:
+         label: main #读取分支
          server:
            git:
-             uri: https://github.com/cuixiaotu/cloud-config.git
-             search-paths: #搜索目录
+             search-paths:
                - cloud-config
+             uri: https://github.com/cuixiaotu/cloud-config.git
              username: 616364596@qq.com
-             password: XXXXXXXXXXXXXXXXX
-         label: main #读取分组
+             password: xxxxx
+             default-label: main #由于XX原因。git改默认分支了
    eureka:
      client:
+       healthcheck:
+         enabled: true
        service-url:
          defaultZone: http://localhost:7001/eureka
    debug: true
@@ -112,9 +115,45 @@ github创建配置项目：https://github.com/cuixiaotu/cloud-config
 
 1.http://config-3344.com:3344/master/config-test.yml
 
+```tex
+config:
+  info: master branch,spring-cloud/config-dev.yml version=1
+```
+
+
+
 2.http://config-3344.com:3344/config-test.yml
 
+```tex
+config:
+  info: master branch,spring-cloud/config-dev.yml version=1
+```
+
+
+
 3.http://config-3344.com:3344/config/test/master
+
+```json
+{
+    "name": "config",
+    "profiles": [
+        "dev"
+    ],
+    "label": "main",
+    "version": "6b0682e4deeb4ba5e710e2969c0648c48a13f71c",
+    "state": null,
+    "propertySources": [
+        {
+            "name": "https://github.com/cuixiaotu/cloud-config.git/config-dev.yml",
+            "source": {
+                "config.info": "master branch,spring-cloud/config-dev.yml version=1"
+            }
+        }
+    ]
+}
+```
+
+
 
 
 
@@ -219,4 +258,72 @@ github创建配置项目：https://github.com/cuixiaotu/cloud-config
    }
    ```
 
+6. 测试
+
+   ![image-20221125205158540](/Users/cuixiaotu/Library/Application Support/typora-user-images/image-20221125205158540.png)
+
+   访问：http://config-3344.com:3344/config-dev.yml
+
+   ![image-20221125210103284](/Users/cuixiaotu/Library/Application Support/typora-user-images/image-20221125210103284.png)
+
+   访问：http://localhost:3355/configInfo
+
+   ![image-20221125210230659](/Users/cuixiaotu/Library/Application Support/typora-user-images/image-20221125210230659.png)
+
+
+
+### 动态刷新问题
+
+1. 修改github上的config-dev.yml文件的版本号为2
+
+2. 刷新http://config-3344.com:3344/main/config-dev.yml,版本号发生改变（这里也有缓存 过了下就生效）
+
+3. 刷新http://localhost:3355/configInfo没有改变
+
+4. 重启3355后生效
+
    
+
+Config客户端动态刷新
+
+1. 在config客户端3355 pom添加
+
+   ```xml
+   <dependency>
+   	<group>org.springframework.boot</group>
+     <artifactId>spring-boot-starter-actuator</artifactId>
+   </dependency>
+   ```
+
+2. Bootstrap.yml添加
+
+   ```yml
+   management:
+     endpoints:
+       web:
+         exposure:
+           include: '*' #注意单引号！！！
+   ```
+
+3. 在ConfigClientController类上添加@RefreshScope注解
+
+4. 重启335
+
+5. 修改github版本号，访问3344和3355
+
+   ![image-20221125224917653](/Users/cuixiaotu/Library/Application Support/typora-user-images/image-20221125224917653.png)
+
+   ![image-20221125224952472](/Users/cuixiaotu/Library/Application Support/typora-user-images/image-20221125224952472.png)
+
+   ![image-20221125234001978](/Users/cuixiaotu/Library/Application Support/typora-user-images/image-20221125234001978.png)
+
+   
+
+   
+
+
+
+
+
+
+
