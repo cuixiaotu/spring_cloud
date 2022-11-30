@@ -20,6 +20,7 @@ spring:
           destination: studyExchange
           content: application/json
           binder: defaultRabbit
+          group: xiaotuB
 eureka:
   client:
     service-url:

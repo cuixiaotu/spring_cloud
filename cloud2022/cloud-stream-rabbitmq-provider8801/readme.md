@@ -286,4 +286,50 @@ API：https://cloud.spring.io/spring-cloud-static/spring-cloud-stream/3.0.1.RELE
 
 生成实际案例
 
-比如在如下场景中，订单系统我们做集群部署，都从RabbitMQ中获取信息。如果一个订单同时被两个服务获取到，可能会
+比如在如下场景中，订单系统我们做集群部署，都从RabbitMQ中获取信息。如果一个订单同时被两个服务获取到，可能会造成数据问题。我们使用分组来解决这种问题。
+
+不同分组：可以重复消费
+
+相同分组：竞争关系，只消费一次
+
+修改8802的yml
+
+```yml
+      bindings:
+        input:
+          destination: studyExchange
+          content: application/json
+          binder: defaultRabbit
+          group: xiaotuA
+```
+
+修改8803的yml
+
+```yml
+      bindings:
+        input:
+          destination: studyExchange
+          content: application/json
+          binder: defaultRabbit
+          group: xiaotuB
+```
+
+查看mq后台
+
+![image-20221130144142832](images/readme/image-20221130144142832.png)
+
+测试发现仍各自消费，再把xiaotuB改为xiaotuA，统一分组。再测试发现同组竞争消费。
+
+![image-20221130144636426](images/readme/image-20221130144636426.png)
+
+### 持久化
+
+1. 停掉8802和8803，去掉8802的`group: xiaotuA`。
+
+2. 然后8801发送4条消息
+
+3. 启动8802，8802并没有去拿取消息。（因为8802去掉了`group: xiaotuA`，所以启动后会再新建一个队列）
+
+4. 启动8803，启动后获取到8801的消息。（因为8803没删除`group: xiaotuA`，xiaotuA队列是在8801发送消息前存在的，所以当8803停机后再启动，就可以获取到停机时8801发送的信息（如果此时同组（队列）里有别的消费者，那么消息会被别的消费者消费掉））
+
+   
