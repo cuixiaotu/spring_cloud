@@ -10,6 +10,11 @@ spring:
       name: config
       profile: dev
       uri: http://localhost:3344
+  rabbitmq:
+    host: 10.0.41.31
+    port: 5672
+    username: guest
+    password: guest
 
 eureka:
   client:
