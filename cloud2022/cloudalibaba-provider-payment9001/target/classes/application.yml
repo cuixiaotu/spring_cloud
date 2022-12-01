@@ -1,0 +1,14 @@
+server:
+  port: 9001
+spring:
+  application:
+    name: nacos-payment-provider
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 10.0.41.31:8848
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
