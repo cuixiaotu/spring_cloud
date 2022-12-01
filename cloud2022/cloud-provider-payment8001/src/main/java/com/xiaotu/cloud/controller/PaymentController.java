@@ -32,6 +32,11 @@ public class PaymentController {
     @Resource
     private DiscoveryClient discoveryClient;
 
+    @GetMapping("/payment/zipkin")
+    public String paymentZipkin(){
+       return "payment.zipkin...";
+    }
+
     @GetMapping("/payment/feign/timeout")
     public String paymentFeignTimeout() {
         try {

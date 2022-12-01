@@ -47,6 +47,13 @@ public class OrderController {
     @Autowired
     private RestTemplate restTemplate;
 
+    @GetMapping("/consumer/payment/zipkin")
+    public String paymentZipkin(){
+        System.out.println("/consumer/payment/zipkin");
+        String result = restTemplate.getForObject("http://localhost:8001"+"/payment/zipkin",String.class);
+        return result;
+    }
+
     @GetMapping("/consumer/payment/create")
     public CommonResult<Payment> create(Payment payment){
         log.info("插入的数据="+payment);
