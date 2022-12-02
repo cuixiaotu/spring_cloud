@@ -19,6 +19,7 @@
         <module name="cloud-provider-hystrix-payment8001" />
         <module name="cloud-config-client-3366" />
         <module name="cloud-consumer-feign-order80" />
+        <module name="cloudalibaba-config-nacos-client3377" />
         <module name="cloud-provider-payment8002" />
         <module name="cloud-api-common" />
         <module name="cloud-provider-payment8004" />
