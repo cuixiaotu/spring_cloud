@@ -261,5 +261,74 @@ docker run --env MODE=standalone --name nacos -d -p 8848:8848 nacos/nacos-server
 
 
 
+1. pom添加
+
+   ```xml
+   <!-- openfeign -->
+   <dependency>
+       <groupId>org.springframework.cloud</groupId>
+       <artifactId>spring-cloud-starter-openfeign</artifactId>
+   </dependency>
+   ```
+
+2. 在主启动类上加上`@EnableFeignClients`，激活feign。
+
+3. 注释掉config配置类的`@Configuration`注解，不使用RestTemplate。
+
+4. 新建service.PaymentFeignService接口
+
+   ```java
+   @Component
+   @FeignClient(value = "nacos-payment-provider")
+   public interface PaymentFeignService {
+   
+       @GetMapping("/payment/nacos/{id}")
+       public String getPayment(@PathVariable("id") Integer id);
+   }
+   ```
+
+5. 修改OrderNacosController
+
+   ```java
+   @Slf4j
+   @RestController
+   public class OrderNacosController {
+   //    @Resource
+   //    private RestTemplate restTemplate;
+   
+       @Value("${service-url.nacos-user-service}")
+       private String serverURL;
+   
+       @Resource
+       private PaymentFeignService paymentFeignService;
+   
+   
+   //    @GetMapping("/consumer/payment/nacos/{id}")
+   //    public String paymentInfo(@PathVariable("id") Long id){
+   //        return restTemplate.getForObject(serverURL + "/payment/nacos/" + id, String.class);
+   //    }
+   
+       @GetMapping("/consumer/payment/feign/nacos/{id}")
+       public String paymentInfo2(@PathVariable("id") Integer id){
+           return paymentFeignService.getPayment(id);
+       }
+   
+   }
+   ```
+
+6. 重启测试
+
+   ![image-20221202105614236](images/SpringCloudAlibaba/image-20221202105614236.png)
+
+
+
+
+
+
+
+
+
+
+
 
 
