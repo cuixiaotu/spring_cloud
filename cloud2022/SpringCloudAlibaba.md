@@ -741,7 +741,17 @@ curl -X PUT '$NACOS_SERVER:8848/nacos/v1/ns/operator/switchers?entry=serverMode&
    ```
 
    ```sh
-   docker run -e MODE=standalone  -e SPRING_DATASOURCE_PLAFORM=mysql -e MYSQL_SERVICE_HOST=127.0.0.1 -e MYSQL_SERVICE_PORT=3306 -e MYSQL_SERVICE_PORT=3306 -e MYSQL_SERVICE_USER=ROOT -e MYSQL_SERVICE_PASSWORD=123456  --name nacos -d -p 8848:8848   nacos/nacos-server
+   docker run -d \
+   -e MODE=standalone  \
+   -e SPRING_DATASOURCE_PLATFORM=mysql \
+   -e MYSQL_SERVICE_HOST=127.0.0.1 \
+   -e MYSQL_SERVICE_PORT=3306 \
+   -e MYSQL_SERVICE_USER=ROOT \
+   -e MYSQL_SERVICE_PASSWORD=123456 \
+   -e MYSQL_SERVICE_DB_NAME=nacos \
+   --name nacos \
+   -p 8848:8848 \
+   nacos/nacos-server
    ```
 
    
