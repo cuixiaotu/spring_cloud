@@ -141,3 +141,125 @@ docker run --env MODE=standalone --name nacos -d -p 8848:8848 nacos/nacos-server
 7. 参照9001新建9002，建立提供者集群启动
 
 ![image-20221201202041464](images/SpringCloudAlibaba/image-20221201202041464.png)
+
+
+
+### 基于Nacos的服务消费者
+
+1. 新建模块cloudalibaba-consumer-nacos-order83
+
+2. pom（nacos集成了ribbon，实现负载均衡）
+
+   ```xml
+   <dependencies>
+       <!-- spring cloud alibaba nacos -->
+       <dependency>
+           <groupId>com.alibaba.cloud</groupId>
+           <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+       </dependency>
+       <dependency>
+           <groupId>com.xiaotu.cloud</groupId>
+           <artifactId>cloud-api-common</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+       <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-web</artifactId>
+       </dependency>
+       <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-actuator</artifactId>
+       </dependency>
+       <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-devtools</artifactId>
+           <scope>runtime</scope>
+           <optional>true</optional>
+       </dependency>
+       <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-test</artifactId>
+           <scope>test</scope>
+       </dependency>
+   
+   </dependencies>
+   ```
+
+3. yml
+
+   ```yml
+   server:
+     port: 83
+   spring:
+     application:
+       name: nacos-order-consumer
+     cloud:
+       nacos:
+         discovery:
+           server-addr: 10.0.41.31:8848
+   
+   #消费者要访问的微服务名称（成功注册nacos的服务提供者）
+   service-url:
+     nacos-user-service: http://nacos-payment-provider
+   
+   ```
+
+4. 主启动类
+
+   ```java
+   @EnableDiscoveryClient
+   @SpringBootApplication
+   public class OrderNacosMain83 {
+       public static void main(String[] args) {
+           SpringApplication.run(OrderNacosMain83.class,args);
+       }
+   }
+   ```
+
+5. 新建config.ApplicationContextConfig
+
+   ```java
+   @Configuration
+   public class ApplicationContextConfig {
+   
+       @Bean
+       @LoadBalanced
+       public RestTemplate getRestTemplate() {
+           return new RestTemplate();
+       }
+   }
+   ```
+
+6. 新建controller.OrderNacosController
+
+   ```java
+   @Slf4j
+   @RestController
+   public class OrderNacosController {
+       @Resource
+       private RestTemplate restTemplate;
+   
+       @Value("${service-url.nacos-user-service}")
+       private String serverURL;
+   
+   
+       @GetMapping("/consumer/payment/nacos/{id}")
+       public String paymentInfo(@PathVariable("id") Long id){
+           return restTemplate.getForObject(serverURL + "/payment/nacos/" + id, String.class);
+       }
+       
+   }
+   ```
+
+7. 测试 启动9001 9002 83
+
+   ![image-20221202104359964](images/SpringCloudAlibaba/image-20221202104359964.png)
+
+### 整合Feign
+
+
+
+
+
+
+
