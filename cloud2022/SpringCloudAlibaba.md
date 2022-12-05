@@ -15,7 +15,7 @@ Spring Cloud Alibaba参考文档：https://spring-cloud-alibaba-group.github.io/
 
 
 
-# 十八、SpringCloud Alibaba [Nacos](https://so.csdn.net/so/search?q=Nacos&spm=1001.2101.3001.7020)服务注册和配置中心
+# 十八、SpringCloud Alibaba Nacos服务注册和配置中心
 
 Nacos
 
@@ -755,3 +755,288 @@ curl -X PUT '$NACOS_SERVER:8848/nacos/v1/ns/operator/switchers?entry=serverMode&
    ```
 
    
+
+# 十九、SpringCloud Alibaba Sentinel实现熔断与限流
+
+官网：https://github.com/alibaba/sentinel
+中文版：[https://github.com/alibaba/Sentinel/wiki/%E4%BB%8B%E7%BB%8D](https://github.com/alibaba/Sentinel/wiki/介绍)
+
+- **丰富的应用场景**：Sentinel 承接了阿里巴巴近 10 年的双十一大促流量的核心场景，例如秒杀（即突发流量控制在系统容量可以承受的范围）、消息削峰填谷、集群流量控制、实时熔断下游不可用应用等。
+- **完备的实时监控**：Sentinel 同时提供实时的监控功能。您可以在控制台中看到接入应用的单台机器秒级数据，甚至 500 台以下规模的集群的汇总运行情况。
+- **广泛的开源生态**：Sentinel 提供开箱即用的与其它开源框架/库的整合模块，例如与 Spring Cloud、Apache Dubbo、gRPC、Quarkus 的整合。您只需要引入相应的依赖并进行简单的配置即可快速地接入 Sentinel。同时 Sentinel 提供 Java/Go/C++ 等多语言的原生实现。
+- **完善的 SPI 扩展机制**：Sentinel 提供简单易用、完善的 SPI 扩展接口。您可以通过实现扩展接口来快速地定制逻辑。例如定制规则管理、适配动态数据源等。
+
+![Sentinel-features-overview](images/SpringCloudAlibaba/50505538-2c484880-0aaf-11e9-9ffc-cbaaef20be2b.png)
+
+
+
+文档：https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html#_spring_cloud_alibaba_sentinel
+
+```dockerfile
+docker search sentinel
+
+docker pull bladex/sentinel-dashboard
+
+docker run --name sentinel -d -p 8858:8858 8719:8719 bladex/sentinel-dashboard
+```
+
+登录http://10.0.41.31:8858/#/login，账号密码都为`sentinel`
+
+![image-20221205103108466](images/SpringCloudAlibaba/image-20221205103108466.png)
+
+内网linux连不到本地，本机jar包重启一个服务
+
+
+
+## 初始化演示工程
+
+1. 新建模块cloudalibaba-sentinel-service8401
+
+2. pom
+
+   ```xml
+       <dependencies>
+           <dependency>
+               <groupId>com.alibaba.cloud</groupId>
+               <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+           </dependency>
+          <dependency>
+               <groupId>com.alibaba.csp</groupId>
+               <artifactId>sentinel-datasource-nacos</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>com.alibaba.cloud</groupId>
+               <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.cloud</groupId>
+               <artifactId>spring-cloud-starter-openfeign</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-web</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-actuator</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-devtools</artifactId>
+               <scope>runtime</scope>
+               <optional>true</optional>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-test</artifactId>
+               <scope>test</scope>
+           </dependency>
+       </dependencies>
+   ```
+
+3. yml
+
+   ```yaml
+   server:
+     port: 8401
+   spring:
+     application:
+       name: cloudalibaba-sentinel-service
+     cloud:
+       nacos:
+         discovery:
+           #nacos服务注册中心地址
+           server-addr: 10.0.41.31:8848
+       sentinel:
+         transport:
+           #配置Sentinel dashboard 地址
+           dashboard: 10.0.41.31:8858
+           # 默认8719端口 假设被占用了 会自动冲8719+1，直到找到未被占用的端口
+           port: 8719
+   management:
+     endpoints:
+       web:
+         exposure:
+           include: '*'
+   ```
+
+4. 主启动类
+
+   ```java
+   @EnableDiscoveryClient
+   @SpringBootApplication
+   public class MainApp8401 {
+       public static void main(String[] args) {
+           SpringApplication.run(MainApp8401.class,args);
+       }
+   }
+   ```
+
+5. controller.FlowLimitController
+
+   ```java
+   @RestController
+   public class FlowLimitController {
+   
+       @GetMapping("/testA")
+       public String testA(){
+           return "testA";
+       }
+   
+       @GetMapping("/testB")
+       public String testB(){
+           return "testB";
+       }
+   }
+   ```
+
+6. 测试，启动8401，然后刷新sentinel后台页面（因为sentinel采用懒加载策略，所以需要调用服务后才在后台显示）
+
+   `http://localhost:8401/testA`
+   `http://localhost:8401/testB`
+
+![image-20221205175139737](images/SpringCloudAlibaba/image-20221205175139737.png)
+
+## 流控规则
+
+- 资源名：唯一名称，默认请求路径
+- 针对来源：Sentinel可以针对调用者进行限流，填写微服务名，默认default（不区分来源）
+- 阈值类型/单机阈值：
+  - QPS（每秒请求数量）：当调用该API的QPS达到阈值的时候，进行限流
+  - 线程数：当调用该API的线程数达到阈值的时候，进行限流
+- 是否集群： 不需要集群，暂不研究
+- 流控模式
+  - 直接：api达到限流条件时，直接限流
+  - 关联：当关联的资源达到阈值，就限流自己
+  - 链路：只记录指定链路上的流量（指定资源从入口资源进来的流量，如果达到阈值，就进行限流）【API级别针对来源】
+- 流控效果
+  - 快速失败：直接失败，抛异常
+  - Warm Up：根据codeFactor（冷加载因子， 默认3）的值，从阈值/codeFactor,经过预热时长，才达到设置的QPS的阈值
+  - 排队等待：匀速排队，让请求以匀速的速度通过，阈值类型必须是QPS，否则无效。
+
+![image-20221205153351518](images/SpringCloudAlibaba/image-20221205153351518.png)
+
+
+
+#### 阈值类型
+
+##### QPS与线程数的区别
+
+- 阈值类型/单机阈值
+  - QPS
+  - 线程数
+
+QPS是直接挡在外面，而线程数是有多少个线程在处理，放进来后，有线程是空闲状态就对请求进行处理，都没空闲，就限流（关门打狗）。
+
+
+
+##### 流控模式
+
+**直接** 快速失败
+
+**关联**
+
+A去调用B，B如果资源不足了，就限流A。
+
+此时不管调用多少次A都不会限流，而此时超过1秒调用1次B，则会限流A。
+
+![image-20221205175414603](images/SpringCloudAlibaba/image-20221205175414603.png)
+
+
+
+
+
+
+
+##### 链路
+
+在网上搜关于链路的是用下面这个例子，然而显示不了限流的效果。
+
+新建一个TestService
+
+```java
+@Service
+public class TestService {
+    @SentinelResource("getTest")
+    public void getTest(){
+        System.out.println("getTest()");
+    }
+}
+```
+
+controller
+
+```java
+@Resource
+TestService testService;
+
+@GetMapping("/testA")
+public String testA(){
+    testService.getTest();
+    return "testA";
+}
+
+@GetMapping("/testB")
+public String testB(){
+    testService.getTest();
+    return "testB";
+}
+```
+
+
+
+##### 预热（Warm Up）
+
+即预热/冷启动方式，当时系统长期处于低水位的情况下，当流量突然增加时。直接把系统升到高水位可能瞬间把系统压垮。通过“冷启动”，让通过的流量缓慢增加，再一定时间内逐渐增加到阈值上线，给冷系统一个预热的时间。避免冷系统被压垮。
+
+#### 匀速排队
+
+匀速排队 ( RuleConstant.CONTROL BEHAVIOR RATE LIMITER )方式会严格控制请求通过的间隔时间，也即是让请求以均匀的速度通过，对应的是漏桶算法。详细文档可以参考 流量控制 -匀速器模式，具体的例子可以参见 PaceFlowDemo。
+
+这种方式主要用于处理间隔性突发的流量，例如消息队列。想象一下这样的场景，在某一秒有大量的请求到来，而接下来的几秒则处于空闲状态，我们希望系统能够在接下来的空闲期间逐渐处理这些请求，而不是在第一秒直接拒绝多余的请求
+
+
+
+## 降级规则
+
+我们通常用以下几种方式来衡量资源是否处于稳定的状态:
+
+- 平均响应时间(DEGRADE_GRADE_RT :当1s 内持续进入N个请求，对应时刻的平均响应时间(秒级)均超过值( count ，以ms 为单位)，那么在接下的时间窗口( DegradeRule 中的 timewindow，以s 为单位)之内，对这个方法的调用都会自动地熔断(抛出 DegradeException )。注意 Sentinel 默认统计的 RT 上限是 4900 ms,超出此值的都会算作4900 ms，若需要变更此上限可以通过启动配置项 -Dcsp.sentinel.statistic,max,rt=xxx 来配置。
+- 异常比例(DEGRADE GRADE EXCEPTION RATIO: 当资源的每秒请求量=N(可配置，并每秒异堂总数占通过量的比值超过闻值 ( DegradeRule 中的 count )之后，资源进入降级状态，即在接下的时间窗口( DeradeRule 中的timewindow ，以s 为单位)之内，对这个方法的调用都会自动地返回。异常比率的阑值范围是 0.0，1.0]，代表 0%100%。
+- 异常数(DEGRADEGRADEEXCEPTION_COUNT): 当资源近1分钟的异常数目超过值之后会进行熔断。注意由于统计时间窗口是分钟级别的，若 timewindow 小于 60s，则结束熔断状态后仍可能再进入熔断状态。
+
+
+
+RT (平均响应时间，秒级)
+平均响应时间超出闽值 且在时间窗口内通过的请求>=5，两个条件同时满足后触发降级窗口期过后关闭断路器
+RT最大4900 (更大的需要通过-Dcsp.sentinel.statistic.maxrt=XXXX才能生效)
+
+异常比列 (秒级)
+QPS>= 5 且异常比例(秒级统计)超过闻值时，触发降级:时间窗口结束后，关闭降级
+
+异常数 (分钟级)
+异常数 (分钟统计)超过闻值时，触发降级，时间窗口结束后，关闭降级
+
+![image-20221205194210188](images/SpringCloudAlibaba/image-20221205194210188.png)
+
+平均响应时间(DEGRADE_GRADE_RT ):当1s 内持续进入N个请求，对应时刻的平均响应时间(秒级)均超过值(count，以ms 为单位)，那么在接下的时间窗口 ( DegradeRule 中的 timewindow，以s 为单位)之内，对这个方法的调用都会自动地熔断(抛出 DegradeException )。注意 Sentinel 默认统计的 RT 上限是 4900 ms，超出此值的都会算作 4900 ms，若需要变更此上限可以通过启动配置项 -Dcsp.sentinel.statistic,max,rt=xxx 来配置。
+
+```java
+    @GetMapping("/testD")
+    public String testD(){
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        log.info("testD 测试RT");
+        return "----testD";
+    }
+```
+
+启动8401，在浏览器输入`http://localhost:8080/testD`，然后在sentinel设置testD降级规则。
+
+![image-20221205194620017](images/SpringCloudAlibaba/image-20221205194620017.png)
+
+*请求处理完成的时间为200毫秒（阈值），超过这个时间熔断降级进入时间窗口期不处理请求，1秒后退出时间窗口期，继续处理请求。（前提是一秒请求数超过5个，如果请求数没超过5个，就算请求处理的时间超过阈值也不会熔断降级）*
+
