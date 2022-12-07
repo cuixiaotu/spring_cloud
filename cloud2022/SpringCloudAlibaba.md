@@ -784,7 +784,7 @@ docker run --name sentinel -d -p 8858:8858 8719:8719 bladex/sentinel-dashboard
 
 ![image-20221205103108466](images/SpringCloudAlibaba/image-20221205103108466.png)
 
-内网linux连不到本地，本机jar包重启一个服务
+内网linux连不到本地，本机jar包重启一个服务 
 
 
 
@@ -944,10 +944,6 @@ A去调用B，B如果资源不足了，就限流A。
 
 
 
-
-
-
-
 ##### 链路
 
 在网上搜关于链路的是用下面这个例子，然而显示不了限流的效果。
@@ -1036,7 +1032,47 @@ QPS>= 5 且异常比例(秒级统计)超过闻值时，触发降级:时间窗口
 
 启动8401，在浏览器输入`http://localhost:8080/testD`，然后在sentinel设置testD降级规则。
 
-![image-20221205194620017](images/SpringCloudAlibaba/image-20221205194620017.png)
+![image-20221207173714504](images/SpringCloudAlibaba/image-20221207173714504.png)
 
 *请求处理完成的时间为200毫秒（阈值），超过这个时间熔断降级进入时间窗口期不处理请求，1秒后退出时间窗口期，继续处理请求。（前提是一秒请求数超过5个，如果请求数没超过5个，就算请求处理的时间超过阈值也不会熔断降级）*
 
+
+
+## 热点key限流
+
+何为热点?热点即经常访问的数据。很多时候我们希望统计某个热点数据中访问频次最高的 TopK 数据，并对其访问进行限制。比如:
+商品ID 为参数，统计一段时间内最常购买的商品ID并进行限制。用户ID 为参数，针对一段时间内频繁访问的用户ID 进行限制.
+热点参数限流会统计传入参数中的热点参数，并根据配置的限流闻值与模式，对包含热点参数的资源调用进行限流。热点参数限流可以看做是一种特殊的流量控制，仅对包含热点参数的资源调用生效
+Sentinel Parameter Flow Control
+Sentinel 利用LRU 策略统计最近最常访问的热点参数，结合令牌桶算法来进行参数级别的流控。热点参数限流支持集群模式。
+
+
+
+兜底逻辑
+
+FlowLimitController中添加：
+
+```java
+    @GetMapping("/testHotKey")
+    @SentinelResource(value = "testHotKey",blockHandler = "deal_testHotKey")
+    public String testHotKey(@RequestParam(value="p1",required = false) String p1,
+                             @RequestParam(value="p2",required = false) String p2){
+        return "hostkey";
+    }
+
+    //兜底方法
+    public String deal_testHotKey(String p1, String p2, BlockException exception){
+        return "--------deal_testHotKey------";
+    }
+```
+
+
+
+重启8401，浏览器输入`http://localhost:8401/testHotKey`，然后在后台对testHotKey进行热点规则配置。
+
+
+
+
+
+系统规则
+Sentinel 系统自适应限流从整体维度对应用入口流量进行控制，结合应用的 Load、CPU 使用率、总体平均 RT、入口 QPS 和并发线程数等几个维度的监控指标，通过自适应的流控策略，让系统的入口流量和系统的负载达到一个平衡，让系统尽可能跑在最大吞吐量的同时保证系统整体的稳定性。
