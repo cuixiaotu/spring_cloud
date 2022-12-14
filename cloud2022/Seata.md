@@ -52,50 +52,20 @@
 
 ## Seata-Server安装
 
-下载：https://github.com/seata/seata/releases ( 新版的用spring写的 配置走application.yml)
+下载：https://github.com/seata/seata/releases 
+
+( 新版的用spring写的 配置走application.yml)
+
+1.4.2被
 
 1. 先备份原始的file.conf文件
 
-2. 自定义事务组名称+事务日志存储模式为db+数据库连接想你想
+2. 
 
-3. file.conf   service模块  store模块 (新版看这里https://seata.io/zh-cn/docs/user/configurations.html)
+3. 
 
    ```sh
-   ### service
-   service {
-       vgroup_mappingmy_test_tx_group = "fsp_tx_group
-       
-       default.grouplist ="127.0.0.1:8091
-       enableDegrade = false
-       disable = false
-       max.commit.retry.timeout = "-1
-       max.rollback.retry.timeout = "-1
-   }
    
-   ### store
-   store {
-   ## store mode: file、db
-   	mode = "db"
-   }
-   
-   ### db
-   db {
-   ## the implement of javaxsql.DataSource, such as DruidData
-   datasource = "dbcp"
-   ## mysql/oracle/h2/oceanbase etc.
-   db-type = "mysql"
-   driver-class-name ="com.mysql.jdbc.Driver"
-   url =  "jdbc:mysql://127.0.0.1:3306/seata"
-   user = "root"
-   password = "你自己密码"
-   min-conn = 1
-   }
-   
-   
-   docker run --name seata-server \
-           -p 8091:8091 \
-           -e SEATA_PORT=8091 \
-           seataio/seata-server:1.5.0
    ```
 
 4. mysql新建数据库 seata
@@ -118,7 +88,70 @@
 ### 订单模块
 
 1. 新建模块seata-order-service2001
-2. 
+
+2. pom
+
+   ```xml
+   <dependencies>
+     <dependency>
+       <groupId>com.alibaba.cloud</groupId>
+       <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+     </dependency>
+   
+     <dependency>
+       <groupId>com.alibaba.cloud</groupId>
+       <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+       <!--            <exclusions>
+                   <exclusion>
+                       <groupId>io.seata</groupId>
+                       <artifactId>seata-all</artifactId>
+                   </exclusion>
+               </exclusions>-->
+     </dependency>
+     <!--        <dependency>
+               <groupId>io.seata</groupId>
+               <artifactId>seata-all</artifactId>
+               <version>1.2.0</version>
+           </dependency>-->
+     <dependency>
+       <groupId>org.springframework.cloud</groupId>
+       <artifactId>spring-cloud-starter-openfeign</artifactId>
+     </dependency>
+     <dependency>
+       <groupId>org.mybatis.spring.boot</groupId>
+       <artifactId>mybatis-spring-boot-starter</artifactId>
+     </dependency>
+     <dependency>
+       <groupId>com.alibaba</groupId>
+       <artifactId>druid-spring-boot-starter</artifactId>
+     </dependency>
+     <dependency>
+       <groupId>mysql</groupId>
+       <artifactId>mysql-connector-java</artifactId>
+     </dependency>
+     <!--jdbc-->
+     <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-jdbc</artifactId>
+     </dependency>
+     <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-actuator</artifactId>
+     </dependency>
+     <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-test</artifactId>
+     </dependency>
+   
+   </dependencies>
+   ```
+
+3. yml
+
+   ```yml
+   ```
+
+   
 
 
 

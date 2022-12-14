@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4ee3aa1f-c3c7-4a4f-8bd0-ebdea9e5156a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-config-center-3344/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-config-center-3344/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-config-center-3344/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-config-center-3344/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-config-center-3344/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-config-center-3344/target/classes/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-config-client-3355/src/main/resources/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-config-client-3355/src/main/resources/bootstrap.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-config-client-3355/target/classes/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-config-client-3355/target/classes/bootstrap.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud2022/cloud-config-client-3355/target/classes/com/xiaotu/cloud/controller/ConfigClientController.class" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/cloud-config-client-3355/target/classes/com/xiaotu/cloud/controller/ConfigClientController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cloud2022/Seata.md" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/Seata.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cloud2022/SpringCloudAlibaba.md" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/SpringCloudAlibaba.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +19,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/cloud2022/cloud-config-client-3355/src/main/java/com/xiaotu/cloud/ConfigClientMain3355.java" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
@@ -98,6 +97,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ConfigClientMain3366" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloud-config-client-3366" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.ConfigClientMain3366" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ConsulOrderMain80" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="cloud-consumer-consul-order80" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.ConsulOrderMain80" />
@@ -152,6 +158,20 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="MainApp8401" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloudalibaba-sentinel-service8401" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.MainApp8401" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NacosConfigClientMain3377" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloudalibaba-config-nacos-client3377" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.NacosConfigClientMain3377" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="OrderFeignMain80" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="cloud-consumer-feign-order80" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.OrderFeignMain80" />
@@ -182,6 +202,13 @@
     <configuration name="OrderMainZK80" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="cloud-consumerzk-order80" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.OrderMainZK80" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrderNacosMain83" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloudalibaba-consumer-nacos-order83" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.OrderNacosMain83" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -227,6 +254,41 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="PaymentMain9001" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloudalibaba-provider-payment9001" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.PaymentMain9001" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PaymentMain9002" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloudalibaba-provider-payment9002" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.PaymentMain9002" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StreamMQMain8801" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloud-stream-rabbitmq-provider8801" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.StreamMQMain8801" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StreamMQMain8802" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloud-stream-rabbitmq-consumer8802" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.StreamMQMain8802" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StreamMQMain8803" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cloud-stream-rabbitmq-consumer8803" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.StreamMQMain8803" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.OrderFeignMain80" />
@@ -253,7 +315,10 @@
       <workItem from="1668951081441" duration="6546000" />
       <workItem from="1669362707882" duration="1297000" />
       <workItem from="1669364138771" duration="156000" />
-      <workItem from="1669364313025" duration="9719000" />
+      <workItem from="1669364313025" duration="11041000" />
+      <workItem from="1670069365009" duration="15246000" />
+      <workItem from="1670464752716" duration="10250000" />
+      <workItem from="1670855002879" duration="1605000" />
     </task>
     <servers />
   </component>
@@ -265,10 +330,10 @@
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
     <state x="467" y="439" width="544" height="266" key="#Notifications/0.25.1792.1095@0.25.1792.1095" timestamp="1668951499371" />
-    <state x="384" y="151" key="#Project_Structure" timestamp="1668951158929">
+    <state x="384" y="151" key="#Project_Structure" timestamp="1670071742484">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state x="384" y="151" key="#Project_Structure/0.25.1792.1095@0.25.1792.1095" timestamp="1668951158929" />
+    <state x="384" y="151" key="#Project_Structure/0.25.1792.1095@0.25.1792.1095" timestamp="1670071742484" />
     <state x="360" y="231" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1668950816085">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
@@ -277,38 +342,38 @@
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
     <state x="100" y="125" width="1592" height="895" key="DiffContextDialog/0.25.1792.1095@0.25.1792.1095" timestamp="1669377199404" />
-    <state width="1331" height="492" key="GridCell.Tab.0.bottom" timestamp="1669390044398">
+    <state width="1331" height="492" key="GridCell.Tab.0.bottom" timestamp="1669613654173">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="1331" height="492" key="GridCell.Tab.0.bottom/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044398" />
-    <state width="1331" height="492" key="GridCell.Tab.0.center" timestamp="1669390044397">
+    <state width="1331" height="492" key="GridCell.Tab.0.bottom/0.25.1792.1095@0.25.1792.1095" timestamp="1669613654173" />
+    <state width="1331" height="492" key="GridCell.Tab.0.center" timestamp="1669613654173">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="1331" height="492" key="GridCell.Tab.0.center/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044397" />
-    <state width="1331" height="492" key="GridCell.Tab.0.left" timestamp="1669390044396">
+    <state width="1331" height="492" key="GridCell.Tab.0.center/0.25.1792.1095@0.25.1792.1095" timestamp="1669613654173" />
+    <state width="1331" height="492" key="GridCell.Tab.0.left" timestamp="1669613654173">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="1331" height="492" key="GridCell.Tab.0.left/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044396" />
-    <state width="1331" height="492" key="GridCell.Tab.0.right" timestamp="1669390044397">
+    <state width="1331" height="492" key="GridCell.Tab.0.left/0.25.1792.1095@0.25.1792.1095" timestamp="1669613654173" />
+    <state width="1331" height="492" key="GridCell.Tab.0.right" timestamp="1669613654173">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="1331" height="492" key="GridCell.Tab.0.right/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044397" />
-    <state width="1331" height="492" key="GridCell.Tab.1.bottom" timestamp="1669390044403">
+    <state width="1331" height="492" key="GridCell.Tab.0.right/0.25.1792.1095@0.25.1792.1095" timestamp="1669613654173" />
+    <state width="1331" height="492" key="GridCell.Tab.1.bottom" timestamp="1669613654174">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="1331" height="492" key="GridCell.Tab.1.bottom/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044403" />
-    <state width="1331" height="492" key="GridCell.Tab.1.center" timestamp="1669390044400">
+    <state width="1331" height="492" key="GridCell.Tab.1.bottom/0.25.1792.1095@0.25.1792.1095" timestamp="1669613654174" />
+    <state width="1331" height="492" key="GridCell.Tab.1.center" timestamp="1669613654174">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="1331" height="492" key="GridCell.Tab.1.center/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044400" />
-    <state width="1331" height="492" key="GridCell.Tab.1.left" timestamp="1669390044399">
+    <state width="1331" height="492" key="GridCell.Tab.1.center/0.25.1792.1095@0.25.1792.1095" timestamp="1669613654174" />
+    <state width="1331" height="492" key="GridCell.Tab.1.left" timestamp="1669613654173">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="1331" height="492" key="GridCell.Tab.1.left/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044399" />
-    <state width="1331" height="492" key="GridCell.Tab.1.right" timestamp="1669390044402">
+    <state width="1331" height="492" key="GridCell.Tab.1.left/0.25.1792.1095@0.25.1792.1095" timestamp="1669613654173" />
+    <state width="1331" height="492" key="GridCell.Tab.1.right" timestamp="1669613654174">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state width="1331" height="492" key="GridCell.Tab.1.right/0.25.1792.1095@0.25.1792.1095" timestamp="1669390044402" />
+    <state width="1331" height="492" key="GridCell.Tab.1.right/0.25.1792.1095@0.25.1792.1095" timestamp="1669613654174" />
     <state x="545" y="294" width="846" height="593" key="NewModule_or_Project.wizard" timestamp="1668951417371">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
@@ -331,9 +396,9 @@
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
     <state x="561" y="265" key="run.anything.popup/0.25.1792.1095@0.25.1792.1095" timestamp="1669378833462" />
-    <state x="561" y="269" width="670" height="676" key="search.everywhere.popup" timestamp="1668955521100">
+    <state x="561" y="269" width="670" height="676" key="search.everywhere.popup" timestamp="1670293333532">
       <screen x="0" y="25" width="1792" height="1095" />
     </state>
-    <state x="561" y="269" width="670" height="676" key="search.everywhere.popup/0.25.1792.1095@0.25.1792.1095" timestamp="1668955521100" />
+    <state x="561" y="269" width="670" height="676" key="search.everywhere.popup/0.25.1792.1095@0.25.1792.1095" timestamp="1670293333532" />
   </component>
 </project>

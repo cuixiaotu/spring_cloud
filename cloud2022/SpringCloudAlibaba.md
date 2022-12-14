@@ -746,15 +746,59 @@ curl -X PUT '$NACOS_SERVER:8848/nacos/v1/ns/operator/switchers?entry=serverMode&
    -e SPRING_DATASOURCE_PLATFORM=mysql \
    -e MYSQL_SERVICE_HOST=127.0.0.1 \
    -e MYSQL_SERVICE_PORT=3306 \
-   -e MYSQL_SERVICE_USER=ROOT \
+   -e MYSQL_SERVICE_USER=root \
    -e MYSQL_SERVICE_PASSWORD=123456 \
-   -e MYSQL_SERVICE_DB_NAME=nacos \
+   -e MYSQL_SERVICE_DB_NAME=nacos_config \
+   --name nacos \
+   -p 8848:8848 \
+   nacos/nacos-server
+   
+   #其他docker命令
+   docker run -d --name nacos \
+   -p 8848:8848 --restart=always \
+   -e JVM_XMS=256m -e JVM_XMX=256m \
+   -e MODE=standalone -e SPRING_DATASOURCE_PLATFORM=mysql \
+   -e MYSQL_SERVICE_HOST=localhost \
+   -e MYSQL_SERVICE_PORT=3306 \
+   -e MYSQL_SERVICE_DB_NAME=nacos_config \
+   -e MYSQL_SERVICE_USER=root \
+   -e MYSQL_SERVICE_PASSWORD=123456 \
+   -e MYSQL_SERVICE_DB_PARAM="allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&characterEncoding=UTF8&serverTimezone=UTC&connectTimeout=10000&socketTimeout=30000&autoReconnect=true&useSSL=false" nacos/nacos-server
+   ```
+   
+   ![image-20221209111106140](./images/image-20221209111106140.png)
+   
+   ```sh
+   docker exec -it nacos bash
+   
+   less conf/application.properties
+   #csdn上都是建议直接修改参数  确定遗漏的参数 修改docker命令
+   #修改参数和docker传环境变量无差别 
+   #查看文档docker内部localhost、127.0.0.1指定镜像本身，并找到宿主机上的mysql的内网地址 
+   docker inspect mysql | grep IPAddress
+   "172.17.0.3"
+   用此地址代替127.0.0.1
+   
+   docker run -d \
+   -e MODE=standalone  \
+   -e SPRING_DATASOURCE_PLATFORM=mysql \
+   -e MYSQL_SERVICE_HOST=172.17.0.3 \
+   -e MYSQL_SERVICE_PORT=3306 \
+   -e MYSQL_SERVICE_USER=root \
+   -e MYSQL_SERVICE_PASSWORD=123456 \
+   -e MYSQL_SERVICE_DB_NAME=nacos_config \
    --name nacos \
    -p 8848:8848 \
    nacos/nacos-server
    ```
-
    
+   随便创建个配置 测试mysql存储
+   
+   ![image-20221211183128642](./images/image-20221211183128642.png)
+   
+   Config_info表里有
+   
+   ![image-20221211183918121](./images/image-20221211183918121.png)
 
 # 十九、SpringCloud Alibaba Sentinel实现熔断与限流
 
