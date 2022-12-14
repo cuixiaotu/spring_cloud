@@ -149,9 +149,174 @@
 3. yml
 
    ```yml
+   server:
+     port: 2001
+   spring:
+     application:
+       name: seata-order-service
+     cloud:
+       alibaba:
+         seata:
+           # 自定义事务组名称需要与seata-server中对应
+           tx-service-group: my_test_tx_service #因为seata的file.config文件没有service模块，事务组名默认为my_test_service
+           #service要与tx-service-group对齐，vgroupMapping和grouplist再service的下一级
+           service:
+             vgroupMapping:
+               #需要和tx-service-group一致
+               my_test_service: default
+             grouplist:
+               # seata server的地址配置 此处集群配置是数组
+               default: 10.0.41.31:8091
+       nacos:
+         discovery:
+           server-addr: 10.0.41.31:8848 # nacos
+     datasource:
+       # 当前数据源操作类型
+       type: com.alibaba.druid.pool.DruidDataSource
+       # mysql驱动类
+       driver-class-name: com.mysql.cj.jdbc.Driver
+       url: jdbc:mysql://localhost:3306/seata_storage?useUnicode=true&charset=utf-8&useSSL=true&serverTimezone=UTC
+       username: root
+       password: 123456
+   feign:
+     hystrix:
+       enabled: false
+   logging:
+     level:
+       io:
+         seata: info
+   mybatis:
+     mapper-locations: classpath*:mapper/*.xml
+   ```
+   
+4. file.conf
+
+   ```conf
    ```
 
+5. registry.conf
+
+   ```
+   ```
+
+6. domain.CommonResult
+
+   ```java
+   @Data
+   @AllArgsConstructor
+   @NoArgsConstructor
+   public class CommonResult<T> {
+       private Integer code;
+       private String message;
+       private T data;
    
+       public CommonResult(Integer code, String message){
+           this(code, message, null);
+       }
+   }
+   ```
+
+   domain.Order
+
+   ```java
+   @Data
+   @AllArgsConstructor
+   @NoArgsConstructor
+   public class Order {
+   
+       private Long id;
+   
+       private Long userId;
+   
+       private Long productId;
+   
+       private Integer count;
+   
+       private BigDecimal money;
+   
+       private Integer status; //订单状态 0创建中 1已完结
+   
+   }
+   ```
+
+7. Dao.OrderDao
+
+   ```java
+   @Mapper
+   public interface OrderDao {
+   
+       //1.新建订单
+       int create(Order order);
+   
+       //2.修改订单状态，从0到1
+       int update(@Param("userId") Long userId, @Param("status") Integer status);
+   }
+   ```
+
+8. resource/mapper/OrderMapper.xml
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8" ?>
+   <!DOCTYPE mapper
+           PUBLIC "-//com.xiaotu.mybatis.org//DTD Mapper 3.0//EN"
+           "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   <mapper namespace="com.xiaotu.cloud.dao.OrderDao">
+   
+       <resultMap id="BaseResultMap" type="com.xiaotu.cloud.domain.Order">
+           <id column="id" property="id" jdbcType="BIGINT"/>
+           <result column="user_id" property="userId" jdbcType="BIGINT"/>
+           <result column="product_id" property="productId" jdbcType="BIGINT" />
+           <result column="count"  property="count" jdbcType="BIGINT"/>
+           <result column="money" property="money" jdbcType="DECIMAL" />
+           <result column="status" property="status" jdbcType="INTEGER"/>
+       </resultMap>
+   
+       <insert id="create" parameterType="com.xiaotu.cloud.domain.Order"
+               useGeneratedKeys="true" keyProperty="id">
+           insert into t_order(`user_id`,`product_uid`,`count`,`money`,`status`)
+               values (#{userId},#{productId},#{count},#{money},0);
+       </insert>
+   
+       <update id="update" parameterType="com.xiaotu.cloud.domain.Order">
+           update t_order set `status` = 1
+               where `user_id` = #{userId} and `status` = #{status}
+       </update>
+   
+   </mapper>
+   ```
+
+9. service.StorageService
+
+   ```java
+   @FeignClient("seata-storage-service")
+   public interface StorageService {
+   
+       //减库存
+       @PostMapping(value = "/storage/decrease")
+       CommonResult decrease(@RequestParam("productId") Long productId, @RequestParam("count") Integer count);
+   }
+   ```
+
+   service.AccountService
+
+   ```java
+   @FeignClient(value = "seata-account-service")
+   public interface AccountService {
+   
+       @PostMapping(value = "/account/decrease")
+       CommonResult decrease(@RequestParam("userId") Long userId, @RequestParam("money")BigDecimal money);
+   }
+   ```
+
+   service.OrderService
+
+   ```java
+   public interface OrderService {
+       void create(Order order);
+   }
+   ```
+
+10. 
 
 
 

@@ -11,21 +11,25 @@ spring:
         #service要与tx-service-group对齐，vgroupMapping和grouplist再service的下一级
         service:
           vgroupMapping:
+            #需要和tx-service-group一致
             my_test_service: default
           grouplist:
+            # seata server的地址配置 此处集群配置是数组
             default: 10.0.41.31:8091
     nacos:
       discovery:
-        server-addr: 10.0.41.31:8848
+        server-addr: 10.0.41.31:8848 # nacos
   datasource:
+    # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
+    # mysql驱动类
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/seata_storage?useUnicode=true&charset=utf-8&useSSL=true&serverTimezone=UTC
     username: root
     password: 123456
 feign:
   hystrix:
-    enabled: true
+    enabled: false
 logging:
   level:
     io:
