@@ -38,6 +38,7 @@
       <module>cloudalibaba-sentinel-service8401</module>
       <module>seata-order-service2001</module>
       <module>snowflake</module>
+      <module>seata-storage-service2002</module>
   </modules>
 
   <properties>

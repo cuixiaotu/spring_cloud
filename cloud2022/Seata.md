@@ -521,3 +521,512 @@
 
 
 
+
+
+
+
+### 库存模块
+
+1. 新建模块seata-storage-service2002
+
+2. pom
+
+   ```xml
+      <dependencies>
+           <dependency>
+               <groupId>com.alibaba.cloud</groupId>
+               <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>com.alibaba.cloud</groupId>
+               <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+               <exclusions>
+                   <exclusion>
+                       <groupId>io.seata</groupId>
+                       <artifactId>seata-all</artifactId>
+                   </exclusion>
+               </exclusions>
+           </dependency>
+           <dependency>
+               <groupId>io.seata</groupId>
+               <artifactId>seata-all</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.cloud</groupId>
+               <artifactId>spring-cloud-starter-openfeign</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>com.alibaba</groupId>
+               <artifactId>druid-spring-boot-starter</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.mybatis.spring.boot</groupId>
+               <artifactId>mybatis-spring-boot-starter</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>mysql</groupId>
+               <artifactId>mysql-connector-java</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-jdbc</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-web</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-actuator</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.projectlombok</groupId>
+               <artifactId>lombok</artifactId>
+               <optional>true</optional>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-test</artifactId>
+               <scope>test</scope>
+           </dependency>
+       </dependencies>
+   ```
+
+3. yml
+
+   ```yml
+   server:
+     port: 2002
+   spring:
+     application:
+       name: seata-storage-service
+     cloud:
+       alibaba:
+         seata:
+           # 自定义的事务组需要与seata-server对应
+           tx-service-group: my_test_tx_group
+           # service要与tx-service-group对齐，vgroupMapping和grouplist在service的下一级
+           service:
+             vgroupMapping:
+               my_test_tx_group: default
+             grouplist:
+               # seata server的地址配置，此处集群配置的是个数组
+               default: 10
+       nacos:
+         discovery:
+           server-addr: 10.0.41.31:8848
+   
+     datasource:
+       type: com.alibaba.druid.pool.DruidDataSource
+       driver-class-name: com.mysql.cj.jdbc.Driver
+       url: jdbc:mysql://localhost:3306/seata?useUnicode=true&charset=utf-8&useSSL=true&serverTimezone=UTC
+       username: root
+       password: 123456
+   feign:
+     hystrix:
+       enabled: false
+   logging:
+     level:
+       io:
+         seata: info
+   
+   mybatis:
+     mapper-locations: classpath*:mapper/*.xml
+   ```
+
+4. file.conf
+
+   ```javascript
+   transport {
+   	  # tcp udt unix-domain-socket
+   	  type = "TCP"
+   	  #NIO NATIVE
+   	  server = "NIO"
+   	  #enable heartbeat
+   	  heartbeat = true
+   	  # the client batch send request enable
+   	  enableClientBatchSendRequest = true
+   	  #thread factory for netty
+   	  threadFactory {
+   	    bossThreadPrefix = "NettyBoss"
+   	    workerThreadPrefix = "NettyServerNIOWorker"
+   	    serverExecutorThread-prefix = "NettyServerBizHandler"
+   	    shareBossWorker = false
+   	    clientSelectorThreadPrefix = "NettyClientSelector"
+   	    clientSelectorThreadSize = 1
+   	    clientWorkerThreadPrefix = "NettyClientWorkerThread"
+   	    # netty boss thread size,will not be used for UDT
+   	    bossThreadSize = 1
+   	    #auto default pin or 8
+   	    workerThreadSize = "default"
+   	  }
+   	  shutdown {
+   	    # when destroy server, wait seconds
+   	    wait = 3
+   	  }
+   	  serialization = "seata"
+   	  compressor = "none"
+   	}
+   	service {
+   	  vgroupMapping.my_test_tx_group = "default"
+   	  default.grouplist = "10.211.55.26:8091"
+   	  enableDegrade = false
+   	  disableGlobalTransaction = false
+   	}
+   
+   	client {
+   	  rm {
+   	    asyncCommitBufferLimit = 10000
+   	    lock {
+   	      retryInterval = 10
+   	      retryTimes = 30
+   	      retryPolicyBranchRollbackOnConflict = true
+   	    }
+   	    reportRetryCount = 5
+   	    tableMetaCheckEnable = false
+   	    reportSuccessEnable = false
+   	    sagaBranchRegisterEnable = false
+   	  }
+   	  tm {
+   	    commitRetryCount = 5
+   	    rollbackRetryCount = 5
+   	    degradeCheck = false
+   	    degradeCheckPeriod = 2000
+   	    degradeCheckAllowTimes = 10
+   	  }
+   	  undo {
+   	    dataValidation = true
+   	    onlyCareUpdateColumns = true
+   	    logSerialization = "jackson"
+   	    logTable = "undo_log"
+   	  }
+   	  log {
+   	    exceptionRate = 100
+   	  }
+   	}
+   ```
+
+5. registry.conf
+
+   ```javascript
+   registry {
+   	  # file 、nacos 、eureka、redis、zk、consul、etcd3、sofa
+   	  type = "nacos"
+   
+   	  nacos {
+   	    application = "seata-server"
+   	    serverAddr = "10.211.55.26:8848"    #nacos
+   	    namespace = ""
+   	    username = ""
+   	    password = ""
+   	  }
+   	  eureka {
+   	    serviceUrl = "http://localhost:8761/eureka"
+   	    weight = "1"
+   	  }
+   	  redis {
+   	    serverAddr = "localhost:6379"
+   	    db = "0"
+   	    password = ""
+   	    timeout = "0"
+   	  }
+   	  zk {
+   	    serverAddr = "127.0.0.1:2181"
+   	    sessionTimeout = 6000
+   	    connectTimeout = 2000
+   	    username = ""
+   	    password = ""
+   	  }
+   	  consul {
+   	    serverAddr = "127.0.0.1:8500"
+   	  }
+   	  etcd3 {
+   	    serverAddr = "http://localhost:2379"
+   	  }
+   	  sofa {
+   	    serverAddr = "127.0.0.1:9603"
+   	    region = "DEFAULT_ZONE"
+   	    datacenter = "DefaultDataCenter"
+   	    group = "SEATA_GROUP"
+   	    addressWaitTime = "3000"
+   	  }
+   	  file {
+   	    name = "file.conf"
+   	  }
+   	}
+   
+   	config {
+   	  # file、nacos 、apollo、zk、consul、etcd3、springCloudConfig
+   	  type = "file"
+   
+   	  nacos {
+   	    serverAddr = "127.0.0.1:8848"
+   	    namespace = ""
+   	    group = "SEATA_GROUP"
+   	    username = ""
+   	    password = ""
+   	  }
+   	  consul {
+   	    serverAddr = "127.0.0.1:8500"
+   	  }
+   	  apollo {
+   	    appId = "seata-server"
+   	    apolloMeta = "http://192.168.1.204:8801"
+   	    namespace = "application"
+   	  }
+   	  zk {
+   	    serverAddr = "127.0.0.1:2181"
+   	    sessionTimeout = 6000
+   	    connectTimeout = 2000
+   	    username = ""
+   	    password = ""
+   	  }
+   	  etcd3 {
+   	    serverAddr = "http://localhost:2379"
+   	  }
+   	  file {
+   	    name = "file.conf"
+   	  }
+   	}
+   ```
+
+6. domain.ComminResult
+
+   ```java
+   @Data
+   @AllArgsConstructor
+   @NoArgsConstructor
+   public class CommonResult<T> {
+       private Integer code;
+       private String message;
+       private T data;
+   
+       public CommonResult(Integer code,String message){
+           this(code,message,null);
+       }
+   }
+   ```
+
+   domain.Storage
+
+   ```java
+   @AllArgsConstructor
+   @NoArgsConstructor
+   @Data
+   public class Storage {
+       private Long id;
+       private Long productId;
+       private Integer total;
+       private Integer used;
+       private Integer residue;
+   }
+   ```
+
+7. dao.StorageDao
+
+   ```java
+   @Mapper
+   public interface StorageDao {
+       void decrease(@Param("productId") Long productId, @Param("count") Integer count);
+   }
+   ```
+
+8. mapper/StorageMapper.xml
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8" ?>
+   <!DOCTYPE mapper
+           PUBLIC "-//com.xiaotu.mybatis.org//DTD Mapper 3.0//EN"
+           "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   <mapper namespace="com.xiaotu.cloud.dao.StorageDao">
+       <resultMap id="BaseResultMap" type="com.xiaotu.cloud.domain.Storage">
+           <id column="id" property="id" jdbcType="BIGINT"/>
+           <result column="product_id" property="productId" jdbcType="BIGINT"/>
+           <result column="total" property="total" jdbcType="INTEGER"/>
+           <result column="used" property="used" jdbcType="INTEGER"/>
+           <result column="residue" property="residue" jdbcType="INTEGER"/>
+       </resultMap>
+   
+       <update id="decrease">
+           update t_storage set used = used + #{count} , residue = residue - #{count}
+           where product_id = #{productId};
+       </update>
+   
+   </mapper>
+   ```
+
+9. service.StorageService
+
+   ```java
+   public interface StorageService {
+       void decrease(Long productId, Integer count);
+   }
+   ```
+
+10. service.impl.StorageServiceImpl
+
+    ```java
+    @Service
+    public class StorageServiceImpl implements StorageService {
+        private static final Logger LOGGER = LoggerFactory.getLogger(StorageServiceImpl.class);
+    
+        @Resource
+        private StorageDao storageDao;
+    
+        @Override
+        public void decrease(Long productId, Integer count) {
+            LOGGER.info("----> StorageService中扣减库存 ");
+            storageDao.decrease(productId, count);
+            LOGGER.info("----> StorageService中扣减库存完成");
+        }
+    }
+    ```
+
+11. controller.StorageController
+
+    ```java
+    @RestController
+    public class StorageController {
+    
+        @Resource
+        private StorageService storageService;
+    
+        @RequestMapping("/storage/decrease")
+        public CommonResult decrease(@RequestParam("productId") Long productId, @RequestParam("count") Integer count){
+            storageService.decrease(productId, count);
+            return new CommonResult(200,"扣减库存成功");
+        }
+    }
+    ```
+
+12. config.MyBatisConfig
+
+    ```java
+    @Configuration
+    @MapperScan("com.xiaotu.cloud.dao")
+    public class MybatisConfig {
+    }
+    ```
+
+    config.DataSourceProxyConfig
+
+    ```java
+    @Configuration
+    public class DataSourceProxyConfig {
+        @Value("${mybatis.mapperLocations}")
+        private String mapperLocations;
+    
+        @Bean
+        @ConfigurationProperties(prefix = "spring.datasource")
+        public DataSource druidDataSource(){
+            return new DruidDataSource();
+        }
+    
+        @Bean
+        public DataSourceProxy dataSourceProxy(DataSource druidDataSource){
+            return new DataSourceProxy(druidDataSource);
+        }
+    
+        @Bean
+        public SqlSessionFactory  sqlSessionFactoryBean(DataSourceProxy dataSourceProxy) throws Exception{
+            SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+            bean.setDataSource(dataSourceProxy);
+            ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            bean.setMapperLocations(resolver.getResources(mapperLocations));
+            return bean.getObject();
+        }
+    ```
+
+13. 主启动类
+
+    ```java
+    @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+    @EnableFeignClients
+    @EnableDiscoveryClient
+    public class SeataStorageMain2002 {
+        public static void main(String[] args) {
+            SpringApplication.run(SeataStorageMain2002.class,args);
+        }
+    }
+    ```
+
+14. 启动2002
+
+
+
+
+
+### 账户模块
+
+1. 新建模块seata-account-service2003
+
+2. pom
+
+   ```xml
+   <dependencies>
+           <dependency>
+               <groupId>com.alibaba.cloud</groupId>
+               <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>com.alibaba.cloud</groupId>
+               <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+               <exclusions>
+                   <exclusion>
+                       <groupId>io.seata</groupId>
+                       <artifactId>seata-all</artifactId>
+                   </exclusion>
+               </exclusions>
+           </dependency>
+           <dependency>
+               <groupId>io.seata</groupId>
+               <artifactId>seata-all</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.cloud</groupId>
+               <artifactId>spring-cloud-starter-openfeign</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>com.alibaba</groupId>
+               <artifactId>druid-spring-boot-starter</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.mybatis.spring.boot</groupId>
+               <artifactId>mybatis-spring-boot-starter</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>mysql</groupId>
+               <artifactId>mysql-connector-java</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-jdbc</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-web</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-actuator</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.projectlombok</groupId>
+               <artifactId>lombok</artifactId>
+               <optional>true</optional>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-test</artifactId>
+               <scope>test</scope>
+           </dependency>
+       </dependencies>
+   ```
+
+3. yml
+
+   ```yml
+   ```
+
+   
+
