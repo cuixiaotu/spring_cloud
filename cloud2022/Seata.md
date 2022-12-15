@@ -1,4 +1,4 @@
-# 二十、SpringCloud Alibaba Seata 处理分布式事务
+#  二十、SpringCloud Alibaba Seata 处理分布式事务
 
 
 
@@ -340,7 +340,7 @@
    <!DOCTYPE mapper
            PUBLIC "-//com.xiaotu.mybatis.org//DTD Mapper 3.0//EN"
            "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-   <mapper namespace="com.xiaotu.cloud.dao.OrderDao">
+   <mapper namespace="com.xiaotu.cloud.dao.AccountDao">
    
        <resultMap id="BaseResultMap" type="com.xiaotu.cloud.domain.Order">
            <id column="id" property="id" jdbcType="BIGINT"/>
@@ -396,7 +396,7 @@
    }
    ```
 
-10. impl.OderServiceImpl
+10. impl.OrerServiceImpl
 
     ```java
     @Slf4j
@@ -1026,7 +1026,354 @@
 3. yml
 
    ```yml
+   server:
+     port: 2001
+   
+   spring:
+     application:
+       name: seata-order-service
+     cloud:
+       alibaba:
+         seata:
+           # 自定义事务组名称需要与seata-server中的对应
+           tx-service-group: my_test_tx_group #因为seata的file.conf文件中没有service模块，事务组名默认为my_test_tx_group
+           service:
+             vgroupMapping:
+               #要和tx-service-group的值一致
+               my_test_tx_group: default
+             grouplist:
+               # seata seaver的 地址配置，此处可以集群配置是个数组
+               default: 10.211.55.26:8091
+       nacos:
+         discovery:
+           server-addr: 10.211.55.26:8848  #nacos
+     datasource:
+       # 当前数据源操作类型
+       type: com.alibaba.druid.pool.DruidDataSource
+       # mysql驱动类
+       driver-class-name: com.mysql.cj.jdbc.Driver
+       url: jdbc:mysql://10.211.55.26:3305/seata_order?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+       username: root
+       password: 123456
+   feign:
+     hystrix:
+       enabled: false
+   logging:
+     level:
+       io:
+         seata: info
+   
+   mybatis:
+     mapperLocations: classpath*:mapper/*.xml
    ```
 
-   
+4. file.conf
 
+   ```javascript
+   server:
+     port: 2001
+   
+   spring:
+     application:
+       name: seata-order-service
+     cloud:
+       alibaba:
+         seata:
+           # 自定义事务组名称需要与seata-server中的对应
+           tx-service-group: my_test_tx_group #因为seata的file.conf文件中没有service模块，事务组名默认为my_test_tx_group
+           service:
+             vgroupMapping:
+               #要和tx-service-group的值一致
+               my_test_tx_group: default
+             grouplist:
+               # seata seaver的 地址配置，此处可以集群配置是个数组
+               default: 10.211.55.26:8091
+       nacos:
+         discovery:
+           server-addr: 10.211.55.26:8848  #nacos
+     datasource:
+       # 当前数据源操作类型
+       type: com.alibaba.druid.pool.DruidDataSource
+       # mysql驱动类
+       driver-class-name: com.mysql.cj.jdbc.Driver
+       url: jdbc:mysql://10.211.55.26:3305/seata_order?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+       username: root
+       password: 123456
+   feign:
+     hystrix:
+       enabled: false
+   logging:
+     level:
+       io:
+         seata: info
+   
+   mybatis:
+     mapperLocations: classpath*:mapper/*.xml
+   ```
+
+5. registry.conf
+
+   ```javascript
+   registry {
+     # file 、nacos 、eureka、redis、zk、consul、etcd3、sofa
+     type = "nacos"
+   
+     nacos {
+       application = "seata-server"
+       serverAddr = "10.211.55.26:8848"    #nacos
+       namespace = ""
+       username = ""
+       password = ""
+     }
+     eureka {
+       serviceUrl = "http://localhost:8761/eureka"
+       weight = "1"
+     }
+     redis {
+       serverAddr = "localhost:6379"
+       db = "0"
+       password = ""
+       timeout = "0"
+     }
+     zk {
+       serverAddr = "127.0.0.1:2181"
+       sessionTimeout = 6000
+       connectTimeout = 2000
+       username = ""
+       password = ""
+     }
+     consul {
+       serverAddr = "127.0.0.1:8500"
+     }
+     etcd3 {
+       serverAddr = "http://localhost:2379"
+     }
+     sofa {
+       serverAddr = "127.0.0.1:9603"
+       region = "DEFAULT_ZONE"
+       datacenter = "DefaultDataCenter"
+       group = "SEATA_GROUP"
+       addressWaitTime = "3000"
+     }
+     file {
+       name = "file.conf"
+     }
+   }
+   
+   config {
+     # file、nacos 、apollo、zk、consul、etcd3、springCloudConfig
+     type = "file"
+   
+     nacos {
+       serverAddr = "127.0.0.1:8848"
+       namespace = ""
+       group = "SEATA_GROUP"
+       username = ""
+       password = ""
+     }
+     consul {
+       serverAddr = "127.0.0.1:8500"
+     }
+     apollo {
+       appId = "seata-server"
+       apolloMeta = "http://192.168.1.204:8801"
+       namespace = "application"
+     }
+     zk {
+       serverAddr = "127.0.0.1:2181"
+       sessionTimeout = 6000
+       connectTimeout = 2000
+       username = ""
+       password = ""
+     }
+     etcd3 {
+       serverAddr = "http://localhost:2379"
+     }
+     file {
+       name = "file.conf"
+     }
+   }
+   ```
+
+6. domain.CommonResult
+
+   ```java
+   @Data
+   @AllArgsConstructor
+   @NoArgsConstructor
+   public class CommonResult<T> {
+       private Integer code;
+       private String message;
+       private T data;
+   
+       public CommonResult(Integer code, String message) {
+           this(code, message, null);
+       }
+   }
+   ```
+
+   domain.Account
+
+   ```java
+   @Data
+   @AllArgsConstructor
+   @NoArgsConstructor
+   public class Account {
+   
+       private Long id;
+   
+       private Long userId;
+   
+       private BigDecimal total;
+   
+       private BigDecimal used;
+   
+       private BigDecimal  residue;
+   }
+   ```
+   
+7. dao.AccountDao
+
+   ```java
+   @Mapper
+   public interface AccountDao {
+   
+       void decrease(@Param("userId") Long userId, @Param("money") BigDecimal money);
+   
+   }
+   ```
+
+8. mapper.AccountMapper.xml
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8" ?>
+   <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+           "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   <mapper namespace="com.angenin.springcloud.dao.AccountDao">
+   
+       <resultMap id="BaseResultMap" type="com.angenin.springcloud.domain.Account">
+           <id column="id" property="id" jdbcType="BIGINT"/>
+           <result column="user_id" property="userId" jdbcType="BIGINT"/>
+           <result column="total" property="total" jdbcType="DECIMAL"/>
+           <result column="used" property="used" jdbcType="DECIMAL"/>
+           <result column="residue" property="residue" jdbcType="DECIMAL"/>
+       </resultMap>
+   
+       <update id="decrease">
+           update t_account
+           set used = used + #{money}, residue = residue - #{money}
+           where user_id = #{userId};
+       </update>
+   </mapper>
+   ```
+
+9. service.AccountService
+
+   ```java
+   public interface AccountService {
+       void decrease(Long userId, BigDecimal money);
+   }
+   ```
+
+10. service.impl.AccountServiceImpl
+
+   ```java
+   @Service
+   public class AccountServiceImpl implements AccountService {
+   
+       private static final Logger LOGGER = LoggerFactory.getLogger(AccountServiceImpl.class);
+   
+       @Resource
+       private AccountDao accountDao;
+   
+       @Override
+       public void decrease(Long userId, BigDecimal money) {
+           LOGGER.info("---> AccountService中扣减账户余额");
+           //模拟超时异常，暂停20秒
+           try {
+               TimeUnit.SECONDS.sleep(20);
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           }
+           accountDao.decrease(userId, money);
+           LOGGER.info("---> AccountService中扣减账户余额完成");
+       }
+   }
+   ```
+
+11. controller.AccountController
+
+    ```java
+    @RestController
+    public class AccountController {
+    
+        @Resource
+        private AccountService accountService;
+    
+        @RequestMapping("/account/decrease")
+        public CommonResult decrease(@RequestParam("userId") Long userId, @RequestParam("money") BigDecimal money){
+            accountService.decrease(userId, money);
+            return new CommonResult(200, "扣减库存成功!");
+        }
+    
+    }
+    ```
+
+12. config.MybatisConfig
+
+    ```java
+    @MapperScan("com.xiaotu.cloud.dao")
+    @Configuration
+    public class MybatisConfig {
+    }
+    ```
+
+    config.DataSourceProxyConfig
+
+    ```java
+    
+    @Configuration
+    public class DataSourceProxyConfig {
+    
+        @Value("${mybatis.mapperLocations}")
+        private String mapperLocations;
+    
+        @Bean
+        @ConfigurationProperties(prefix = "spring.datasource")
+        public DataSource druidDataSource() {
+            return new DruidDataSource();
+        }
+    
+        @Bean
+        public DataSourceProxy dataSourceProxy(DataSource druidDataSource) {
+            return new DataSourceProxy(druidDataSource);
+        }
+    
+        @Bean
+        public SqlSessionFactory sqlSessionFactoryBean(DataSourceProxy dataSourceProxy) throws Exception {
+            SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+            bean.setDataSource(dataSourceProxy);
+            ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            bean.setMapperLocations(resolver.getResources(mapperLocations));
+            return bean.getObject();
+        }
+    }
+    ```
+
+13. 主启动类
+
+    ```java
+    @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+    @EnableFeignClients
+    @EnableDiscoveryClient
+    public class SeataAccountMain2003 {
+    
+        public static void main(String[] args) {
+            SpringApplication.run(SeataAccountMain2003.class,args);
+        }
+    }
+    ```
+
+14. 启动2003
+
+    
