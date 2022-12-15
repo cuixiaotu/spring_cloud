@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4ee3aa1f-c3c7-4a4f-8bd0-ebdea9e5156a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/cloud2022/Seata.md" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/Seata.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud2022/SpringCloudAlibaba.md" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/SpringCloudAlibaba.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cloud2022/seata-order-service2001/src/main/java/com/xiaotu/cloud/controller/StorageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/cloud2022/seata-order-service2001/src/main/java/com/xiaotu/cloud/controller/OrderController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -158,6 +158,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="MainApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="snowflake" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.MainApp" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="MainApp8401" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="cloudalibaba-sentinel-service8401" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.MainApp8401" />
@@ -268,6 +275,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="SeataAccountMain2003" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="seata-order-service2001" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.SeataAccountMain2003" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="StreamMQMain8801" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="cloud-stream-rabbitmq-provider8801" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.xiaotu.cloud.StreamMQMain8801" />
@@ -318,7 +332,7 @@
       <workItem from="1669364313025" duration="11041000" />
       <workItem from="1670069365009" duration="15246000" />
       <workItem from="1670464752716" duration="10250000" />
-      <workItem from="1670855002879" duration="1605000" />
+      <workItem from="1670855002879" duration="4834000" />
     </task>
     <servers />
   </component>

@@ -31,6 +31,7 @@
       <module fileurl="file://$PROJECT_DIR$/cloud2022/cloudalibaba-provider-payment9002/cloudalibaba-provider-payment9002.iml" filepath="$PROJECT_DIR$/cloud2022/cloudalibaba-provider-payment9002/cloudalibaba-provider-payment9002.iml" />
       <module fileurl="file://$PROJECT_DIR$/cloud2022/cloudalibaba-sentinel-service8401/cloudalibaba-sentinel-service8401.iml" filepath="$PROJECT_DIR$/cloud2022/cloudalibaba-sentinel-service8401/cloudalibaba-sentinel-service8401.iml" />
       <module fileurl="file://$PROJECT_DIR$/cloud2022/seata-order-service2001/seata-order-service2001.iml" filepath="$PROJECT_DIR$/cloud2022/seata-order-service2001/seata-order-service2001.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloud2022/snowflake/snowflake.iml" filepath="$PROJECT_DIR$/cloud2022/snowflake/snowflake.iml" />
     </modules>
   </component>
 </project>

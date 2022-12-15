@@ -56,27 +56,107 @@
 
 ( 新版的用spring写的 配置走application.yml)
 
-1.4.2被
+1.4.2和1.5.0后的配置有些不一样，这里按1.4.2稳定版配置.
 
-1. 先备份原始的file.conf文件
+1. 按前文已经配置好 nacos和mysql。
 
-2. 
+2. seata mysql相关数据库表
 
-3. 
+   ```sql
+   -- the table to store GlobalSession data
+   CREATE TABLE IF NOT EXISTS `global_table`
+   (
+       `xid`                       VARCHAR(128) NOT NULL,
+       `transaction_id`            BIGINT,
+       `status`                    TINYINT      NOT NULL,
+       `application_id`            VARCHAR(32),
+       `transaction_service_group` VARCHAR(32),
+       `transaction_name`          VARCHAR(128),
+       `timeout`                   INT,
+       `begin_time`                BIGINT,
+       `application_data`          VARCHAR(2000),
+       `gmt_create`                DATETIME,
+       `gmt_modified`              DATETIME,
+       PRIMARY KEY (`xid`),
+       KEY `idx_gmt_modified_status` (`gmt_modified`, `status`),
+       KEY `idx_transaction_id` (`transaction_id`)
+   ) ENGINE = InnoDB
+     DEFAULT CHARSET = utf8;
+   
+   -- the table to store BranchSession data
+   CREATE TABLE IF NOT EXISTS `branch_table`
+   (
+       `branch_id`         BIGINT       NOT NULL,
+       `xid`               VARCHAR(128) NOT NULL,
+       `transaction_id`    BIGINT,
+       `resource_group_id` VARCHAR(32),
+       `resource_id`       VARCHAR(256),
+       `branch_type`       VARCHAR(8),
+       `status`            TINYINT,
+       `client_id`         VARCHAR(64),
+       `application_data`  VARCHAR(2000),
+       `gmt_create`        DATETIME(6),
+       `gmt_modified`      DATETIME(6),
+       PRIMARY KEY (`branch_id`),
+       KEY `idx_xid` (`xid`)
+   ) ENGINE = InnoDB
+     DEFAULT CHARSET = utf8;
+   
+   -- the table to store lock data
+   CREATE TABLE IF NOT EXISTS `lock_table`
+   (
+       `row_key`        VARCHAR(128) NOT NULL,
+       `xid`            VARCHAR(128),
+       `transaction_id` BIGINT,
+       `branch_id`      BIGINT       NOT NULL,
+       `resource_id`    VARCHAR(256),
+       `table_name`     VARCHAR(32),
+       `pk`             VARCHAR(36),
+       `gmt_create`     DATETIME,
+       `gmt_modified`   DATETIME,
+       PRIMARY KEY (`row_key`),
+       KEY `idx_branch_id` (`branch_id`)
+   ) ENGINE = InnoDB
+     DEFAULT CHARSET = utf8;
+   ```
+
+3. docker 启动seata
 
    ```sh
+   docker run -d --name seata -p 8091:8091 -e SEATA_IP=你想指定的ip -e SEATA_PORT=8091 seataio/seata-server:1.4.2
+   ```
+
+4. 修改seata配置
+
+5. 由于seata容器没有内置vim，我们可以直接将文件夹cp到宿主机外来编辑好了，再cp回去。
+
+   ```sh
+   docker cp 容器id:seata-server/resources 需要放置的目录
+   ```
+
+6. 使用如下代码获取两个容器的ip地址
+
+   ```sh
+   docker inspect --foramt='{{.NetworkSettings.IPAddress}}' ID/NAMES
+   ```
+
+7. Nacos-config.txt编辑如下内容
+
+   ```
+   ```
+
+8. 修改registry.conf
+
+   ```
    
    ```
 
-4. mysql新建数据库 seata
+9. 配置完成后使用如下命令复制到容器中，并重启
 
-5. seata库创建表
-
-   5.1 seata\conf\application.conf配置
-
-   ```yaml
-   registry:
-   	nacos
+   ```sh
+   docker cp /home/seata/resoures/registry.conf seata:seata-server/resources/
+   docker restart seata
+   docker logs -f seata
    ```
 
    
@@ -188,7 +268,7 @@
    mybatis:
      mapper-locations: classpath*:mapper/*.xml
    ```
-   
+
 4. file.conf
 
    ```conf
@@ -316,7 +396,128 @@
    }
    ```
 
-10. 
+10. impl.OderServiceImpl
+
+    ```java
+    @Slf4j
+    @Service
+    public class OrderServiceImpl implements OrderService {
+    
+        @Resource
+        private OrderDao orderDao;
+        @Resource
+        private StorageService storageService;
+        @Resource
+        private AccountService accountService;
+    
+        @Override
+        public void create(Order order) {
+            //1.创建订单
+            log.info("------>开始创建订单");
+            orderDao.create(order);
+    
+            //2.扣减库存
+            log.info("------>订单微服务开始调用库存，做扣减count");
+            storageService.decrease(order.getProductId(),order.getCount());
+            log.info("------>订单微服务开始调用库存，扣减完成");
+    
+            //3.扣减账号余额
+            log.info("------>订单微服务开始调用账号，做扣减money");
+            accountService.decrease(order.getUserId(),order.getMoney());
+            log.info("------>订单微服务开始调用账号，扣减完成");
+    
+            //3.扣减账号余额
+            log.info("------>修改订单状态");
+            orderDao.update(order.getUserId(),1);
+            log.info("------>修改订单状态完成");
+    
+            log.info("------->新建订单完成");    }
+    }
+    
+    ```
+
+11. controller.OrderController
+
+    ```java
+    @RestController
+    public class OrderController{
+      @Resource
+      private OrderService orderService;
+      
+      @GetMapping("/order/create")
+      public CommonResult create(Order order){
+      		orderService.create(order);
+        	return new CommonResult(200,"订单创建成功！");
+      }
+    }
+    ```
+
+12. config.MybatisConfig
+
+    ```java
+    @MapperScan("com.xiaotu.cloud.dao")
+    @Configutation
+    public class MybatisConfig{
+      
+    }
+    ```
+
+    config.DataSourceProxyConfig
+
+    ```java
+    
+    @Slf4j
+    @Service
+    public class OrderServiceImpl implements OrderService {
+    
+        @Resource
+        private OrderDao orderDao;
+        @Resource
+        private StorageService storageService;
+        @Resource
+        private AccountService accountService;
+    
+        @Override
+        public void create(Order order) {
+            //1.创建订单
+            log.info("------>开始创建订单");
+            orderDao.create(order);
+    
+            //2.扣减库存
+            log.info("------>订单微服务开始调用库存，做扣减count");
+            storageService.decrease(order.getProductId(),order.getCount());
+            log.info("------>订单微服务开始调用库存，扣减完成");
+    
+            //3.扣减账号余额
+            log.info("------>订单微服务开始调用账号，做扣减money");
+            accountService.decrease(order.getUserId(),order.getMoney());
+            log.info("------>订单微服务开始调用账号，扣减完成");
+    
+            //3.扣减账号余额
+            log.info("------>修改订单状态");
+            orderDao.update(order.getUserId(),1);
+            log.info("------>修改订单状态完成");
+    
+            log.info("------->新建订单完成");
+        }
+    }
+    
+    ```
+
+13. 主启动类
+
+    ```java
+    @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+    @EnableFeignClients
+    @EnableDiscoveryClient
+    public class SeataAccountMain2003 {
+        public static void main(String[] args) {
+            SpringApplication.run(SeataAccountMain2003.class,args);
+        }
+    }
+    ```
+
+14. 启动2001
 
 
 
